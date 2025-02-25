@@ -1,0 +1,25 @@
+using UnityEngine;
+
+public class TheAnimCopier : MonoBehaviour
+{
+    [SerializeField] private MainAnimator mainObject;
+    Animator anim;
+    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    void Start() {
+        anim = GetComponent<Animator>();
+    }
+
+    // Update is called once per frame
+    void Update() {
+        AnimatorClipInfo[] clipInfo = anim.GetCurrentAnimatorClipInfo(0);
+        AnimatorClipInfo[] clipInfoMain = mainObject.Anim.GetCurrentAnimatorClipInfo(0);
+        if (clipInfo[0].clip.name != clipInfoMain[0].clip.name) {
+            AnimatorStateInfo stateInfoMain = mainObject.Anim.GetCurrentAnimatorStateInfo(0);
+            mainObject.Anim.Play(stateInfoMain.fullPathHash, 0, 0);//stateInfoMain.normalizedTime
+            anim.Play(stateInfoMain.fullPathHash, 0, 0);
+
+        }
+        Debug.Log("main" + mainObject.Anim.GetCurrentAnimatorStateInfo(0).normalizedTime);
+        Debug.Log("sub" + anim.GetCurrentAnimatorStateInfo(0).normalizedTime);
+    }
+}
