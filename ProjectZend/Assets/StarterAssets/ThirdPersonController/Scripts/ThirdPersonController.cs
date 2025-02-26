@@ -11,6 +11,7 @@ namespace StarterAssets
     [RequireComponent(typeof(CharacterController))]
 #if ENABLE_INPUT_SYSTEM 
     [RequireComponent(typeof(PlayerInput))]
+    [RequireComponent(typeof(StarterAssetsInputs))]
 #endif
     public class ThirdPersonController : MonoBehaviour
     {
@@ -159,6 +160,7 @@ namespace StarterAssets
             JumpAndGravity();
             GroundedCheck();
             Move();
+            //Debug.Log("Speed");
         }
 
         private void LateUpdate()

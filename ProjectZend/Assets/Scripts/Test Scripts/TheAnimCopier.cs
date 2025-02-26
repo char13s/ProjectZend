@@ -10,16 +10,17 @@ public class TheAnimCopier : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update() {
-        AnimatorClipInfo[] clipInfo = anim.GetCurrentAnimatorClipInfo(0);
-        AnimatorClipInfo[] clipInfoMain = mainObject.Anim.GetCurrentAnimatorClipInfo(0);
-        if (clipInfo[0].clip.name != clipInfoMain[0].clip.name) {
-            AnimatorStateInfo stateInfoMain = mainObject.Anim.GetCurrentAnimatorStateInfo(0);
-            mainObject.Anim.Play(stateInfoMain.fullPathHash, 0, 0);//stateInfoMain.normalizedTime
-            anim.Play(stateInfoMain.fullPathHash, 0, 0);
-
-        }
-        Debug.Log("main" + mainObject.Anim.GetCurrentAnimatorStateInfo(0).normalizedTime);
-        Debug.Log("sub" + anim.GetCurrentAnimatorStateInfo(0).normalizedTime);
+    void LateUpdate() {
+        //AnimatorClipInfo[] clipInfo = anim.GetCurrentAnimatorClipInfo(0);
+        //AnimatorClipInfo[] clipInfoMain = mainObject.Anim.GetCurrentAnimatorClipInfo(0);
+        AnimatorStateInfo stateInfoMain = mainObject.Anim.GetCurrentAnimatorStateInfo(0);
+        //if (clipInfo[0].clip.name != clipInfoMain[0].clip.name) {
+        //    
+        //   // mainObject.Anim.Play(stateInfoMain.fullPathHash, 0, 0);//stateInfoMain.normalizedTime
+        //   // anim.Play(stateInfoMain.fullPathHash, 0, 0);
+        //}
+        //anim.Update(Time.deltaTime);
+        //mainObject.Anim.Update(Time.deltaTime);
+        //anim.Play(stateInfoMain.fullPathHash, 0, stateInfoMain.normalizedTime);
     }
 }
