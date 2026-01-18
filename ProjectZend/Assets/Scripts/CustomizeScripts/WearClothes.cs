@@ -6,8 +6,10 @@ public class WearClothes : MonoBehaviour
     [SerializeField] GameObject mainBody;
     [SerializeField] SkinnedMeshRenderer hair;
     //[SerializeField] private SkinnedMeshRenderer playerBody;
-    [SerializeField] private GameObject clothing1;
+    private GameObject clothing1;
     [SerializeField] private GameObject[] tops;
+    private GameObject currentTop;
+    private int currentTopIndex=0;
     private void Start() {
         PutOn(clothing1);
     }
@@ -70,5 +72,17 @@ public class WearClothes : MonoBehaviour
        // hairMaterial = hair.material;
        // hair.color = temp;
        // hair.material = hairMaterial;
+    }
+    void OnSwap(int val) {
+        if (currentTop != null) {
+            Destroy(currentTop);
+        }
+        currentTopIndex += val;
+        //if (currentTopIndex==tops.Count)
+        //    HairSetsIndex += val;
+        //if (HairSetsIndex == hairSets.Count) {
+        //    HairSetsIndex = 0;
+        //}
+        //CurrentHair = hairSets[hairSetsIndex];
     }
 }
