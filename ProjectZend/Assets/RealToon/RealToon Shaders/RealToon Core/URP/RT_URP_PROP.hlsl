@@ -27,6 +27,7 @@ CBUFFER_START(UnityPerMaterial)
 		uniform half _OutlineWidth;
 		uniform int _OutlineExtrudeMethod;
 		uniform half3 _OutlineOffset;
+		uniform float3 _OutResi;
 		uniform half _OutlineZPostionInCamera;
 		uniform half4 _OutlineColor;
 		uniform half _MixMainTexToOutline;
@@ -67,7 +68,7 @@ CBUFFER_START(UnityPerMaterial)
 		uniform half _Cutout;
 		uniform half _AlphaBaseCutout;
 		uniform half _UseSecondaryCutout;
-		
+		uniform half _AAS;
 		uniform half _Glow_Edge_Width;
 		uniform half4 _Glow_Color;
 
@@ -77,7 +78,6 @@ CBUFFER_START(UnityPerMaterial)
 
 	//== N_F_NM_ON
 		uniform float4 _NormalMap_ST;
-
 		uniform half _NormalMapIntensity;
 	//==
 
@@ -116,6 +116,10 @@ CBUFFER_START(UnityPerMaterial)
 		uniform half _PSGLOTEX;
 		uniform half _GlossTextureRotate;
 		uniform half _GlossTextureFollowObjectRotation;
+		uniform half _NoisTexInten;
+		uniform half _StraWidt;
+		uniform half _NoiTexAffStraWidt;
+		uniform half _ShifAnis;
 		uniform half _GlossTextureFollowLight;
 	//==
 
@@ -205,6 +209,8 @@ CBUFFER_START(UnityPerMaterial)
 		uniform half _DirectionalLightIntensity;
 		uniform half _PointSpotlightIntensity;
 		uniform half _LightFalloffSoftness;
+		uniform half _LLI_Min;
+		uniform half _LLI_Max;
 	//==
 
 
@@ -217,7 +223,7 @@ CBUFFER_START(UnityPerMaterial)
 
 	//== N_F_R_ON
 		uniform half _ReflectionIntensity;
-		uniform half _ReflectionRoughtness;
+		uniform half _Smoothness;
 		uniform half _RefMetallic;
 
 		uniform float4 _MaskReflection_ST;
@@ -233,6 +239,7 @@ CBUFFER_START(UnityPerMaterial)
 		uniform half _RimLigInt;
 		uniform half _RimLightUnfill;
 		uniform half _RimLightSoftness;
+		uniform half3 _RimLigPosi;
 		uniform half _LightAffectRimLightColor;
 		uniform half4 _RimLightColor;
 		uniform half _RimLightColorPower;
@@ -270,8 +277,9 @@ CBUFFER_START(UnityPerMaterial)
 
 	//== Others
 		uniform half4 _SSAOColor;
-
 		uniform half _ReduSha;
+		uniform float _ObjePosiZCS;
+
 		uniform sampler3D _DitherMaskLOD;
 
 		float _SkinMatrixIndex;
@@ -302,6 +310,7 @@ UNITY_DOTS_INSTANCING_START(MaterialPropertyMetadata)
 	UNITY_DOTS_INSTANCED_PROP(float, _OutlineWidth)
 	UNITY_DOTS_INSTANCED_PROP(int, _OutlineExtrudeMethod)
 	UNITY_DOTS_INSTANCED_PROP(float3, _OutlineOffset)
+	UNITY_DOTS_INSTANCED_PROP(float3, _OutResi)
 	UNITY_DOTS_INSTANCED_PROP(float, _OutlineZPostionInCamera)
 	UNITY_DOTS_INSTANCED_PROP(float4, _OutlineColor)
 	UNITY_DOTS_INSTANCED_PROP(float, _MixMainTexToOutline)
@@ -324,6 +333,8 @@ UNITY_DOTS_INSTANCING_START(MaterialPropertyMetadata)
 	UNITY_DOTS_INSTANCED_PROP(float, _Cutout)
 	UNITY_DOTS_INSTANCED_PROP(float, _AlphaBaseCutout)
 	UNITY_DOTS_INSTANCED_PROP(float, _UseSecondaryCutout)
+
+	UNITY_DOTS_INSTANCED_PROP(float, _AAS)
 
 	UNITY_DOTS_INSTANCED_PROP(float4, _Glow_Color)
 	UNITY_DOTS_INSTANCED_PROP(float, _Glow_Edge_Width)
@@ -348,6 +359,10 @@ UNITY_DOTS_INSTANCING_START(MaterialPropertyMetadata)
 	UNITY_DOTS_INSTANCED_PROP(float, _PSGLOTEX)
 	UNITY_DOTS_INSTANCED_PROP(float, _GlossTextureRotate)
 	UNITY_DOTS_INSTANCED_PROP(float, _GlossTextureFollowObjectRotation)
+	UNITY_DOTS_INSTANCED_PROP(float, _NoisTexInten)
+	UNITY_DOTS_INSTANCED_PROP(float, _StraWidt)
+	UNITY_DOTS_INSTANCED_PROP(float, _NoiTexAffStraWidt)
+	UNITY_DOTS_INSTANCED_PROP(float, _ShifAnis)
 	UNITY_DOTS_INSTANCED_PROP(float, _GlossTextureFollowLight)
 
 	UNITY_DOTS_INSTANCED_PROP(float4, _OverallShadowColor)
@@ -399,18 +414,21 @@ UNITY_DOTS_INSTANCING_START(MaterialPropertyMetadata)
 	UNITY_DOTS_INSTANCED_PROP(float, _DirectionalLightIntensity)
 	UNITY_DOTS_INSTANCED_PROP(float, _PointSpotlightIntensity)
 	UNITY_DOTS_INSTANCED_PROP(float, _LightFalloffSoftness)
+	UNITY_DOTS_INSTANCED_PROP(float, _LLI_Min)
+	UNITY_DOTS_INSTANCED_PROP(float, _LLI_Max)
 
 	UNITY_DOTS_INSTANCED_PROP(float, _CustomLightDirectionIntensity)
 	UNITY_DOTS_INSTANCED_PROP(float4, _CustomLightDirection)
 	UNITY_DOTS_INSTANCED_PROP(float, _CustomLightDirectionFollowObjectRotation)
 
 	UNITY_DOTS_INSTANCED_PROP(float, _ReflectionIntensity)
-	UNITY_DOTS_INSTANCED_PROP(float, _ReflectionRoughtness)
+	UNITY_DOTS_INSTANCED_PROP(float, _Smoothness)
 	UNITY_DOTS_INSTANCED_PROP(float, _RefMetallic)
 
 	UNITY_DOTS_INSTANCED_PROP(float, _RimLigInt)
 	UNITY_DOTS_INSTANCED_PROP(float, _RimLightUnfill)
 	UNITY_DOTS_INSTANCED_PROP(float, _RimLightSoftness)
+	UNITY_DOTS_INSTANCED_PROP(float3, _RimLigPosi)
 	UNITY_DOTS_INSTANCED_PROP(float, _LightAffectRimLightColor)
 	UNITY_DOTS_INSTANCED_PROP(float4, _RimLightColor)
 	UNITY_DOTS_INSTANCED_PROP(float, _RimLightColorPower)
@@ -433,10 +451,12 @@ UNITY_DOTS_INSTANCING_START(MaterialPropertyMetadata)
 	UNITY_DOTS_INSTANCED_PROP(float, _NoiseSize)
 	UNITY_DOTS_INSTANCED_PROP(float, _TrailSize)
 
-	UNITY_DOTS_INSTANCED_PROP(float3, _ObjectForward);
-	UNITY_DOTS_INSTANCED_PROP(float3, _ObjectRight);
+	UNITY_DOTS_INSTANCED_PROP(float3, _ObjectForward)
+	UNITY_DOTS_INSTANCED_PROP(float3, _ObjectRight)
 
 	UNITY_DOTS_INSTANCED_PROP(float4, _SSAOColor)
+
+	UNITY_DOTS_INSTANCED_PROP(float, _ObjePosiZCS)
 
 	UNITY_DOTS_INSTANCED_PROP_OVERRIDE_SUPPORTED(float, _SkinMatrixIndex)
 	UNITY_DOTS_INSTANCED_PROP_OVERRIDE_SUPPORTED(float, _ComputeMeshIndex)
@@ -456,6 +476,7 @@ static float unity_DOTS_Sampled_HighlightColorPower;
 static float unity_DOTS_Sampled_OutlineWidth;
 static int unity_DOTS_Sampled_OutlineExtrudeMethod;
 static float3 unity_DOTS_Sampled_OutlineOffset;
+static float3 unity_DOTS_Sampled_OutResi;
 static float unity_DOTS_Sampled_OutlineZPostionInCamera;
 static float4 unity_DOTS_Sampled_OutlineColor;
 static float unity_DOTS_Sampled_MixMainTexToOutline;
@@ -478,6 +499,8 @@ static float unity_DOTS_Sampled_TransparentThreshold;
 static float unity_DOTS_Sampled_Cutout;
 static float unity_DOTS_Sampled_AlphaBaseCutout;
 static float unity_DOTS_Sampled_UseSecondaryCutout;
+
+static float unity_DOTS_Sampled_AAS;
 
 static float4 unity_DOTS_Sampled_Glow_Color;
 static float unity_DOTS_Sampled_Glow_Edge_Width;
@@ -502,6 +525,10 @@ static float unity_DOTS_Sampled_GlossTextureSoftness;
 static float unity_DOTS_Sampled_PSGLOTEX;
 static float unity_DOTS_Sampled_GlossTextureRotate;
 static float unity_DOTS_Sampled_GlossTextureFollowObjectRotation;
+static float unity_DOTS_Sampled_NoisTexInten;
+static float unity_DOTS_Sampled_StraWidt;
+static float unity_DOTS_Sampled_NoiTexAffStraWidt;
+static float unity_DOTS_Sampled_ShifAnis;
 static float unity_DOTS_Sampled_GlossTextureFollowLight;
 
 static float4 unity_DOTS_Sampled_OverallShadowColor;
@@ -553,18 +580,21 @@ static float unity_DOTS_Sampled_LightIntensity;
 static float unity_DOTS_Sampled_DirectionalLightIntensity;
 static float unity_DOTS_Sampled_PointSpotlightIntensity;
 static float unity_DOTS_Sampled_LightFalloffSoftness;
+static float unity_DOTS_Sampled_LLI_Min;
+static float unity_DOTS_Sampled_LLI_Max;
 
 static float unity_DOTS_Sampled_CustomLightDirectionIntensity;
 static float4 unity_DOTS_Sampled_CustomLightDirection;
 static float unity_DOTS_Sampled_CustomLightDirectionFollowObjectRotation;
 
 static float unity_DOTS_Sampled_ReflectionIntensity;
-static float unity_DOTS_Sampled_ReflectionRoughtness;
+static float unity_DOTS_Sampled_Smoothness;
 static float unity_DOTS_Sampled_RefMetallic;
 
 static float unity_DOTS_Sampled_RimLigInt;
 static float unity_DOTS_Sampled_RimLightUnfill;
 static float unity_DOTS_Sampled_RimLightSoftness;
+static float3 unity_DOTS_Sampled_RimLigPosi;
 static float unity_DOTS_Sampled_LightAffectRimLightColor;
 static float4 unity_DOTS_Sampled_RimLightColor;
 static float unity_DOTS_Sampled_RimLightColorPower;
@@ -592,7 +622,7 @@ static float3 unity_DOTS_Sampled_ObjectRight;
 
 static float4 unity_DOTS_Sampled_SSAOColor;
 
-
+static float unity_DOTS_Sampled_ObjePosiZCS;
 
 void SetupDOTSLitMaterialPropertyCaches()
 {
@@ -607,6 +637,7 @@ void SetupDOTSLitMaterialPropertyCaches()
 	unity_DOTS_Sampled_OutlineWidth                                         = UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float, _OutlineWidth);
 	unity_DOTS_Sampled_OutlineExtrudeMethod                                 = UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(int, _OutlineExtrudeMethod);
 	unity_DOTS_Sampled_OutlineOffset                                        = UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float3, _OutlineOffset);
+	unity_DOTS_Sampled_OutResi												= UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float3, _OutResi);
 	unity_DOTS_Sampled_OutlineZPostionInCamera                              = UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float, _OutlineZPostionInCamera);
 	unity_DOTS_Sampled_OutlineColor                                         = UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float4, _OutlineColor);
 	unity_DOTS_Sampled_MixMainTexToOutline                                  = UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float, _MixMainTexToOutline);
@@ -629,6 +660,8 @@ void SetupDOTSLitMaterialPropertyCaches()
 	unity_DOTS_Sampled_Cutout                                               = UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float, _Cutout);
 	unity_DOTS_Sampled_AlphaBaseCutout                                      = UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float, _AlphaBaseCutout);
 	unity_DOTS_Sampled_UseSecondaryCutout                                   = UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float, _UseSecondaryCutout);
+
+	unity_DOTS_Sampled_AAS				                                    = UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float, _AAS);
 
 	unity_DOTS_Sampled_Glow_Color                                           = UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float4, _Glow_Color);
 	unity_DOTS_Sampled_Glow_Edge_Width                                      = UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float, _Glow_Edge_Width);
@@ -653,6 +686,10 @@ void SetupDOTSLitMaterialPropertyCaches()
 	unity_DOTS_Sampled_PSGLOTEX                                             = UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float, _PSGLOTEX);
 	unity_DOTS_Sampled_GlossTextureRotate                                   = UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float, _GlossTextureRotate);
 	unity_DOTS_Sampled_GlossTextureFollowObjectRotation                     = UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float, _GlossTextureFollowObjectRotation);
+    unity_DOTS_Sampled_NoisTexInten											= UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float, _NoisTexInten);
+    unity_DOTS_Sampled_StraWidt												= UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float, _StraWidt);
+    unity_DOTS_Sampled_NoiTexAffStraWidt									= UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float, _NoiTexAffStraWidt);
+    unity_DOTS_Sampled_ShifAnis												= UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float, _ShifAnis);
 	unity_DOTS_Sampled_GlossTextureFollowLight                              = UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float, _GlossTextureFollowLight);
 
 	unity_DOTS_Sampled_OverallShadowColor                                   = UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float4, _OverallShadowColor);
@@ -704,18 +741,21 @@ void SetupDOTSLitMaterialPropertyCaches()
 	unity_DOTS_Sampled_DirectionalLightIntensity                            = UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float, _DirectionalLightIntensity);
 	unity_DOTS_Sampled_PointSpotlightIntensity                              = UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float, _PointSpotlightIntensity);
 	unity_DOTS_Sampled_LightFalloffSoftness                                 = UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float, _LightFalloffSoftness);
+	unity_DOTS_Sampled_LLI_Min												= UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float, _LLI_Min);
+	unity_DOTS_Sampled_LLI_Max											    = UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float, _LLI_Max);
 
 	unity_DOTS_Sampled_CustomLightDirectionIntensity                        = UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float, _CustomLightDirectionIntensity);
 	unity_DOTS_Sampled_CustomLightDirection                                 = UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float4, _CustomLightDirection);
 	unity_DOTS_Sampled_CustomLightDirectionFollowObjectRotation             = UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float, _CustomLightDirectionFollowObjectRotation);
 
 	unity_DOTS_Sampled_ReflectionIntensity                                  = UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float, _ReflectionIntensity);
-	unity_DOTS_Sampled_ReflectionRoughtness                                 = UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float, _ReflectionRoughtness);
+	unity_DOTS_Sampled_Smoothness											= UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float, _Smoothness);
 	unity_DOTS_Sampled_RefMetallic                                          = UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float, _RefMetallic);
 
 	unity_DOTS_Sampled_RimLigInt                                            = UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float, _RimLigInt);
 	unity_DOTS_Sampled_RimLightUnfill                                       = UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float, _RimLightUnfill);
 	unity_DOTS_Sampled_RimLightSoftness                                     = UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float, _RimLightSoftness);
+	unity_DOTS_Sampled_RimLigPosi											= UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float3, _RimLigPosi);
 	unity_DOTS_Sampled_LightAffectRimLightColor                             = UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float, _LightAffectRimLightColor);
 	unity_DOTS_Sampled_RimLightColor                                        = UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float4, _RimLightColor);
 	unity_DOTS_Sampled_RimLightColorPower                                   = UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float, _RimLightColorPower);
@@ -746,6 +786,8 @@ void SetupDOTSLitMaterialPropertyCaches()
 
 	unity_DOTS_Sampled_SSAOColor											= UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float4, _SSAOColor);
 
+	unity_DOTS_Sampled_ObjePosiZCS											= UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float, _ObjePosiZCS);
+
 }
 
 
@@ -764,6 +806,7 @@ void SetupDOTSLitMaterialPropertyCaches()
 #define _OutlineWidth									unity_DOTS_Sampled_OutlineWidth
 #define _OutlineExtrudeMethod							unity_DOTS_Sampled_OutlineExtrudeMethod
 #define _OutlineOffset									unity_DOTS_Sampled_OutlineOffset
+#define _OutResi                                        unity_DOTS_Sampled_OutResi
 #define _OutlineZPostionInCamera						unity_DOTS_Sampled_OutlineZPostionInCamera
 #define _OutlineColor									unity_DOTS_Sampled_OutlineColor
 #define _MixMainTexToOutline							unity_DOTS_Sampled_MixMainTexToOutline
@@ -786,6 +829,8 @@ void SetupDOTSLitMaterialPropertyCaches()
 #define _Cutout											unity_DOTS_Sampled_Cutout
 #define _AlphaBaseCutout								unity_DOTS_Sampled_AlphaBaseCutout
 #define _UseSecondaryCutout								unity_DOTS_Sampled_UseSecondaryCutout
+
+#define _AAS											unity_DOTS_Sampled_AAS
 
 #define _Glow_Color										unity_DOTS_Sampled_Glow_Color
 #define _Glow_Edge_Width								unity_DOTS_Sampled_Glow_Edge_Width
@@ -810,6 +855,10 @@ void SetupDOTSLitMaterialPropertyCaches()
 #define _PSGLOTEX										unity_DOTS_Sampled_PSGLOTEX
 #define _GlossTextureRotate								unity_DOTS_Sampled_GlossTextureRotate
 #define _GlossTextureFollowObjectRotation				unity_DOTS_Sampled_GlossTextureFollowObjectRotation
+#define _NoisTexInten                                   unity_DOTS_Sampled_NoisTexInten
+#define _StraWidt                                       unity_DOTS_Sampled_StraWidt
+#define _NoiTexAffStraWidt                              unity_DOTS_Sampled_NoiTexAffStraWidt
+#define _ShifAnis                                       unity_DOTS_Sampled_ShifAnis
 #define _GlossTextureFollowLight						unity_DOTS_Sampled_GlossTextureFollowLight
 
 #define _OverallShadowColor								unity_DOTS_Sampled_OverallShadowColor
@@ -861,18 +910,21 @@ void SetupDOTSLitMaterialPropertyCaches()
 #define _DirectionalLightIntensity						unity_DOTS_Sampled_DirectionalLightIntensity
 #define _PointSpotlightIntensity						unity_DOTS_Sampled_PointSpotlightIntensity
 #define _LightFalloffSoftness							unity_DOTS_Sampled_LightFalloffSoftness
+#define _LLI_Min										unity_DOTS_Sampled_LLI_Min
+#define _LLI_Max									    unity_DOTS_Sampled_LLI_Max
 
 #define _CustomLightDirectionIntensity					unity_DOTS_Sampled_CustomLightDirectionIntensity
 #define _CustomLightDirection							unity_DOTS_Sampled_CustomLightDirection
 #define _CustomLightDirectionFollowObjectRotation       unity_DOTS_Sampled_CustomLightDirectionFollowObjectRotation
 
 #define _ReflectionIntensity							unity_DOTS_Sampled_ReflectionIntensity
-#define _ReflectionRoughtness							unity_DOTS_Sampled_ReflectionRoughtness
+#define _Smoothness										unity_DOTS_Sampled_Smoothness
 #define _RefMetallic									unity_DOTS_Sampled_RefMetallic
 
 #define _RimLigInt										unity_DOTS_Sampled_RimLigInt
 #define _RimLightUnfill									unity_DOTS_Sampled_RimLightUnfill
 #define _RimLightSoftness								unity_DOTS_Sampled_RimLightSoftness
+#define _RimLigPosi										unity_DOTS_Sampled_RimLigPosi
 #define _LightAffectRimLightColor						unity_DOTS_Sampled_LightAffectRimLightColor
 #define _RimLightColor									unity_DOTS_Sampled_RimLightColor
 #define _RimLightColorPower								unity_DOTS_Sampled_RimLightColorPower
@@ -899,6 +951,8 @@ void SetupDOTSLitMaterialPropertyCaches()
 #define _ObjectRight									unity_DOTS_Sampled_ObjectRight
 
 #define _SSAOColor                                      unity_DOTS_Sampled_SSAOColor
+
+#define _ObjePosiZCS									unity_DOTS_Sampled_ObjePosiZCS
 
 //=========
 

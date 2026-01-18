@@ -80,12 +80,13 @@ DOTS_LiBleSki(input.indices, input.weights, input.position.xyz, input.normalOS.x
 		_LBS_CD_Position = input.position;
 	#endif
 	//==
-		
+	
+	
 	//RT_PA
 	#if N_F_PA_ON
-		output.positionCS = mul(RT_PA(vertexInput.positionWS), float4(_LBS_CD_Position.xyz,1.0) );
+		output.positionCS = mul(RT_PA(vertexInput.positionWS), float4(_LBS_CD_Position.xyz,1.0) ) + (float4(0,0,_ObjePosiZCS,0.0) * 0.0001);
 	#else
-		output.positionCS = vertexInput.positionCS;
+        output.positionCS = vertexInput.positionCS + (float4(0, 0, _ObjePosiZCS, 0.0) * 0.0001);
 	#endif
 	//==
 		
@@ -117,8 +118,9 @@ float4 frag(Varyings input) : SV_Target
 		half4 _MainTex_var = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, TRANSFORM_TEX(input.uv, _MainTex));
 	#endif
 
+		
 	//RT_CO
-	RT_CO(input.uv, _MainTex_var, input.positionWS, input.normalWS, input.positionCS.xy);
+	RT_CO(input.uv, _MainTex_var, _MainTex_var.a, input.positionWS, input.normalWS, input.positionCS.xy);
 	//==
 		
 		

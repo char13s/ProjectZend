@@ -1,34 +1,47 @@
-What's New to RealToon V5.0.11 (February 2025)
+What's New to RealToon V5.0.14 (October 2025)
 =====================================
 
 [New]
-- (ShadowT - SDF Mode Helper - New Options) (Built-In, URP and HDRP)
-*Forward Inverted - Invert Forward/Front position of the object.
-*Right Inverted - Invert Right position of the object.
-*Light Threshold - The amount of light.
+(New Options for RimLight feature) 
+- RimLight In Shadow (URP & HDRP)
+- Position (Adjust RimLight Position.) (ALL)
+- Intensity (Adjust The Intensity of The Option "Light Affect Rim Light Color".) (HDRP)
 
-- RealToon Shader Cache (New Tool) (Built-In, URP and HDRP)
-"To reduce or clear cached RealToon Shader."
-"Useful for after update RealToon Shader or Re-import RealToon Shader."
-"To access this, "Window -> RealToon -> RealToon Shader Cache"."
+(New Options for ShadowT SDF Mode - Helper) (All)
+- SDF Texture (SDF Shadow Texture Slot.)
+- Hardness (Adjust the hardness of the SDF Shadow.)
+- Self Shadow (Enable/Disable RealToon's Self Shadow feature.)
 
-- Support URP Dynamic Lightmap. (Unity 6.0 to Latest)
-- Support URP Deferred+. (Unity 6.1 to Latest)
-- Support Unity 6.1
-- Early add support for the later Unity 6.2.
+(New Options for Outline) (All)
+- Outline Resize (Adjust the XYZ axis outline width/size.)
 
+(New Options for Welcome Screen) (All)
+- Check Updates
+
+- Object Position Z (CS) (All) - (Adjust object z position in clip space.)
+- Decal Support for RealToon HDRP.
+
+[Improvements]
+- Improved Welcome Screen UI.
+- Dynamic Lightmap recode. (URP Unity 6.0 to later)
+- Does not create any additional shader keywords when you enable options. (URP Unity 6.0 to later)
+- Enable/Disable Transparent Mode has been rewrite because of the added Decals. (HDRP Unity 6.0 to later)
 
 [Changes]
-- RealToon Shader (SRP) packages has been reorganized, separate Unity 6 folder and Older/Previous Unity version folders.
-- (URP 10 - 11) and (HDRP 10 - 11) has been removed, not supported anymore.
+- RayTracing Punctual Lights are changed to newer variables and functions. (HDRP Unity 6.0 to later)
+- Enable Arealight option default to enabled.  (HDRP Unity 6.0 to later)
+- Swap Shader To RealToon Tool, Emission Map will now use it as SelfLit Emission Map not Mask.
+- Now follows the new VRC Light Volumes folder name. (BiRP/Built-In) (VRC)
+- URP 12 & 13 and HDRP 12 & 13 are not supported anymore.
 
 
 [Fixed]
-- Gloss feature "Unity_WorldToObject" error. (URP)
-- Overlap Sky & RayTracing Reflection. (HDRP)
-- RealToon HDRP Example missing Global Volume and overexposed. (HDRP)
-- URP Lightmap errors. (URP)
-
+- WRITE_NORMAL_BUFFER keyword redefinition. (HDRP Unity 6.0 to later)
+- Decal does not follow Render Layer selections. (URP Unity 6.1 to later)
+- Depth Normals Pass does not have _WRITE_RENDERING_LAYERS keyword. (URP 16 to below - Deferred Rendering)
+- unity_ObjectToWorld error. (URP)
+- Sample Directional Lightmap error. (URP)
+- Enable/Disable VRC Light Volumes not working. (BiRP/Built-In) (VRC)
 ====================================
 
 #Read the "Change - Fix Log.txt." file for previous updates.

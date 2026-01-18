@@ -118,7 +118,7 @@ namespace RealToon.Tools
             "*Standard (Specular setup)\n" +
             "*Unlit/Color\n" +
             "*Unlit/Texture\n" +
-            "*Unlit/Transparent" +
+            "*Unlit/Transparent\n" +
             "*Unlit/Transparent Cutout\n\n";
 
             SupShaVRM = "Supported VRoid|VRM Shaders:\n" +
@@ -1072,7 +1072,9 @@ namespace RealToon.Tools
                                         {
                                             m.EnableKeyword("N_F_SL_ON");
                                             m.SetFloat("_N_F_SL", 1.0f);
-                                            m.SetFloat("_SelfLitPower", 10);
+                                            m.EnableKeyword("N_F_SLMM_ON");
+                                            m.SetFloat("_N_F_SLMM", 1.0f);
+                                            m.SetFloat("_SelfLitPower", 10.0f);
                                             m.SetFloat("_SelfLitIntensity", 1.0f);
                                             m.SetTexture("_MaskSelfLit", ShaEmiMap);
                                             m.SetColor("_SelfLitColor", ShaEmiColor * ShaEmiColor);
@@ -1342,7 +1344,9 @@ namespace RealToon.Tools
                                         {
                                             m.EnableKeyword("N_F_SL_ON");
                                             m.SetFloat("_N_F_SL", 1.0f);
-                                            m.SetFloat("_SelfLitPower", 50);
+                                            m.EnableKeyword("N_F_SLMM_ON");
+                                            m.SetFloat("_N_F_SLMM", 1.0f);
+                                            m.SetFloat("_SelfLitPower", 50.0f);
                                             m.SetFloat("_SelfLitIntensity", 1.0f);
 
                                             if (ShaEmiMap != null)
@@ -1602,7 +1606,9 @@ namespace RealToon.Tools
                                     {
                                         m.EnableKeyword("N_F_SL_ON");
                                         m.SetFloat("_N_F_SL", 1.0f);
-                                        m.SetFloat("_SelfLitPower", 10);
+                                        m.EnableKeyword("N_F_SLMM_ON");
+                                        m.SetFloat("_N_F_SLMM", 1.0f);
+                                        m.SetFloat("_SelfLitPower", 10.0f);
                                         m.SetFloat("_SelfLitIntensity", 1.0f);
                                         m.SetTexture("_MaskSelfLit", ShaEmiMap);
                                         m.SetColor("_SelfLitColor", ShaEmiColor);

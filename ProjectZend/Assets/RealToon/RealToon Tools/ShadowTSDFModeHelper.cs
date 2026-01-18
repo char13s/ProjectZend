@@ -4,7 +4,9 @@
 
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace RealToon.Script
 {
@@ -28,8 +30,15 @@ namespace RealToon.Script
         [Space(10)]
 
         [SerializeField]
+        public Texture2D SDFTexture = null;
+
+        [SerializeField]
         [Tooltip("The amount of light.")]
         float LightThreshold = 200.0f;
+
+        [SerializeField]
+        [Tooltip("How hard/soft the shadow.")]
+        float Hardness = 1.0f;
 
         [Space(10)]
 
@@ -40,6 +49,14 @@ namespace RealToon.Script
         [Tooltip("Invert the Right position of the object.")]
         [SerializeField]
         bool RightInverted = false;
+
+        [Space(10)]
+
+        [SerializeField]
+        [Tooltip("Enable/Disable Self Shadow feature.")]
+        bool SelfShadow = false;
+
+        [Space(10)]
 
         [HideInInspector]
         [SerializeField]
@@ -72,23 +89,28 @@ namespace RealToon.Script
                     Material.shader.name == RT_Sha_Nam_BiRP_TDR)
                 {
                     Material.SetFloat("_ShadowTLightThreshold", LightThreshold);
+                    Material.SetFloat("_ShadowTHardness", Hardness);
 
-                    if (ForwardInverted != true)
+                    switch(ForwardInverted)
                     {
-                        Material.SetVector("_ObjectForward", ObjectToFollow.transform.forward);
-                    }
-                    else
-                    {
-                        Material.SetVector("_ObjectForward", -ObjectToFollow.transform.forward);
+                        case true:
+                            Material.SetVector("_ObjectForward", -ObjectToFollow.transform.forward);
+                            break;
+
+                        case false:
+                            Material.SetVector("_ObjectForward", ObjectToFollow.transform.forward);
+                            break;
                     }
 
-                    if (RightInverted != true)
+                    switch (RightInverted)
                     {
-                        Material.SetVector("_ObjectRight", ObjectToFollow.transform.right);
-                    }
-                    else
-                    {
-                        Material.SetVector("_ObjectRight", -ObjectToFollow.transform.right);
+                        case true:
+                            Material.SetVector("_ObjectRight", -ObjectToFollow.transform.right);
+                            break;
+
+                        case false:
+                            Material.SetVector("_ObjectRight", ObjectToFollow.transform.right);
+                            break;
                     }
                 }
             }
@@ -123,7 +145,36 @@ namespace RealToon.Script
 
                             Material.EnableKeyword("N_F_STSDFM_ON");
                             Material.SetFloat("_N_F_STSDFM", 1.0f);
+
+                            if(Material.IsKeywordEnabled("N_F_ST_ON") == true)
+                            {
+                                SelfShadow = true;
+                            }
+                            else if(Material.IsKeywordEnabled("N_F_ST_ON") == false)
+                            {
+                                SelfShadow = false;
+                            }
+
                             checkstart = false;
+                        } 
+                    }
+                    {
+                        if (Material.GetTexture("_ShadowT") != null ||
+                           Material.GetTexture("_ShadowT") == null)
+                        {
+                            Material.SetTexture("_ShadowT", SDFTexture);
+                        }
+
+                        switch (SelfShadow)
+                        {
+                            case true:
+                                Material.EnableKeyword("N_F_SS_ON");
+                                Material.SetFloat("_N_F_SS", 1.0f);
+                                break;
+                            case false:
+                                Material.DisableKeyword("N_F_SS_ON");
+                                Material.SetFloat("_N_F_SS", 0.0f);
+                                break;
                         }
                     }
                 }

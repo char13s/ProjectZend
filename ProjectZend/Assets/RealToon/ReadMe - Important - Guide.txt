@@ -98,13 +98,11 @@ Unity and SRP(URP and HDRP) Versions:
 Unity 6.0 to Later - URP
 Unity 2023.1.0 to before 2023.2.20 - URP 15 to 16
 Unity 2021.3.0 to before 2022.2.0 - URP 14
-Unity 2021.2.0 to before 2021.3.0 - URP 12 to 13
 
 [HDRP]
 Unity 6.0 to Later - HDRP
 Unity 2023.2.0 to before 2023.2.20 - HDRP 16
 Unity 2022.2.0 to before 2022.3.0 - HDRP 14 to 15
-Unity 2021.2.0 to before 2022.2.0 - HDRP 12 to 13
 
 Recommended Unity versions for Built-In RP/3D:
 From Unity 5 to current latest unity version.

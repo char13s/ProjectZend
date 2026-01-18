@@ -51,7 +51,7 @@ namespace RealToon.GUIInspector
 
         #region Variables
 
-string realtoon_version = "5.0.11";
+string realtoon_version = "5.0.14";
 string shader_type = "Default";
 string srp_mode = "URP";
 bool del_skw = false;
@@ -100,6 +100,8 @@ static string add_st_string = "Add 'See Through' feature";
         MaterialProperty _SecondaryCutout = null;
         MaterialProperty _AlphaBaseCutout = null;
         MaterialProperty _N_F_SCO = null;
+        MaterialProperty _AlpToCov = null;
+        MaterialProperty _AAS = null;
         MaterialProperty _N_F_COEDGL = null;
         MaterialProperty _Glow_Color = null;
         MaterialProperty _Glow_Edge_Width = null;
@@ -122,6 +124,7 @@ static string add_st_string = "Add 'See Through' feature";
         MaterialProperty _OutlineWidthControl = null;
         MaterialProperty _OutlineExtrudeMethod = null;
         MaterialProperty _OutlineOffset = null;
+        MaterialProperty _OutResi = null;
         MaterialProperty _OutlineZPostionInCamera = null;
         MaterialProperty _DoubleSidedOutline = null;
         MaterialProperty _OutlineColor = null;
@@ -132,6 +135,7 @@ static string add_st_string = "Add 'See Through' feature";
         MaterialProperty _OutlineWidthAffectedByViewDistance = null;
         MaterialProperty _FarDistanceMaxWidth = null;
         MaterialProperty _VertexColorBlueAffectOutlineWitdh = null;
+        MaterialProperty _OutStenPass = null;
 
         MaterialProperty _N_F_MSSOLTFO = null;
         MaterialProperty _DepthThreshold = null;
@@ -141,6 +145,7 @@ static string add_st_string = "Add 'See Through' feature";
         MaterialProperty _SelfLitPower = null;
         MaterialProperty _TEXMCOLINT = null;
         MaterialProperty _SelfLitHighContrast = null;
+        MaterialProperty _N_F_SLMM = null;
         MaterialProperty _MaskSelfLit = null;
 
         MaterialProperty _GlossIntensity = null;
@@ -155,6 +160,11 @@ static string add_st_string = "Add 'See Through' feature";
         MaterialProperty _PSGLOTEX = null;
         MaterialProperty _GlossTextureRotate = null;
         MaterialProperty _GlossTextureFollowObjectRotation = null;
+        MaterialProperty _N_F_ANIS = null;
+        MaterialProperty _NoisTexInten = null;
+        MaterialProperty _StraWidt = null;
+        MaterialProperty _NoiTexAffStraWidt;
+        MaterialProperty _ShifAnis = null;
         MaterialProperty _GlossTextureFollowLight = null;
 
         MaterialProperty _OverallShadowColor = null;
@@ -211,6 +221,10 @@ static string add_st_string = "Add 'See Through' feature";
         MaterialProperty _LightAffectShadow = null;
         MaterialProperty _LightIntensity = null;
 
+        MaterialProperty _N_F_LLI = null;
+        MaterialProperty _LLI_Min = null;
+        MaterialProperty _LLI_Max = null;
+
         MaterialProperty _UseTLB = null;
         MaterialProperty _N_F_EAL = null;
 
@@ -223,7 +237,7 @@ static string add_st_string = "Add 'See Through' feature";
         MaterialProperty _CustomLightDirection = null;
 
         MaterialProperty _ReflectionIntensity = null;
-        MaterialProperty _ReflectionRoughtness = null;
+        MaterialProperty _Smoothness = null;
         MaterialProperty _RefMetallic = null;
         MaterialProperty _MaskReflection = null;
         MaterialProperty _FReflection = null;
@@ -233,8 +247,10 @@ static string add_st_string = "Add 'See Through' feature";
         MaterialProperty _RimLightColor = null;
         MaterialProperty _RimLightColorPower = null;
         MaterialProperty _RimLightSoftness = null;
+        MaterialProperty _RimLigPosi = null;
         MaterialProperty _RimLightInLight = null;
         MaterialProperty _LightAffectRimLightColor = null;
+        MaterialProperty _N_F_RLIS = null;
 
         MaterialProperty _MinFadDistance = null;
         MaterialProperty _MaxFadDistance = null;
@@ -282,7 +298,6 @@ static string add_st_string = "Add 'See Through' feature";
         MaterialProperty _N_F_RL = null;
         MaterialProperty _N_F_HDLS = null;
         MaterialProperty _N_F_HPSS = null;
-        MaterialProperty _ZWrite = null;
         MaterialProperty _N_F_DCS = null;
         MaterialProperty _N_F_NLASOBF = null;
         MaterialProperty _N_F_RDC = null;
@@ -292,6 +307,8 @@ static string add_st_string = "Add 'See Through' feature";
         MaterialProperty _N_F_PA = null;
         MaterialProperty _N_F_SE = null;
 
+        MaterialProperty _ObjePosiZCS = null;
+        MaterialProperty _ZWrite = null;
         MaterialProperty _N_F_OFLMB = null;
 
         #endregion
@@ -340,7 +357,12 @@ static string add_st_string = "Add 'See Through' feature";
             N_F_PA_ON,
             N_F_SE_ON,
             N_F_SCO_ON,
-            N_F_STSDFM_ON
+            N_F_STSDFM_ON,
+            N_F_ATC_ON,
+            N_F_ANIS_ON,
+            N_F_LLI_ON,
+            N_F_SLMM_ON,
+            N_F_RLIS_ON
         }
 
         #endregion
@@ -840,7 +862,58 @@ static string add_st_string = "Add 'See Through' feature";
         "SDF Style Shadowing.\nNote: This only affect 3D Space X & Z axis.",
 
         //Add/Remove 'See Through' feature [163]
-        "This will add or remove 'See Through' feature on the RealToon Shader.\n\nUse this if you don't need the 'See Through' feature.\n\nThis will modify the RealToon shader file."
+        "This will add or remove 'See Through' feature on the RealToon Shader.\n\nUse this if you don't need the 'See Through' feature.\n\nThis will modify the RealToon shader file.",
+
+        //Anti-Aliasing Affects Cutout (Cutout) [164]
+        "Anti-Aliasing/MSAA affects cutout.\n\n*This is Alpha To Coverage and it will only work if Forward/Forward+ Path Rendering is use.\n*If you turn off Cutout feature, this will revert to disable/off.",
+
+        //Anisotropic Mode (Gloss Texture) [165]
+        "Setting the Gloss Texture to Anisotropic Mode.\n\nNote: This will use Gloss Texture texture input as noise.",
+
+        //Noise Texture Intensity (Gloss Texture) [166]
+        "How strong the Noise Texture distortion.",
+
+        //Width (Gloss Texture) [167]
+        "Width of the Anisotropic.",
+
+        //Shift (Gloss Texture) [168]
+        "Shift the Anisotropic to Up or Down.",
+        
+        //Noise Texture Affect Width (Gloss Texture) [169]
+        "Noise Texture affect Anisotropic Width.\n\nNote: White means 1 while Black is 0.",
+
+        //Stencil: Pass (Outline) [170]
+        "Use for fixing outline overlapping issues to other assets, objects and UI.",
+
+        //Limit Light Intensity [171]
+        "This will limit the light intensity.\nMinimum and maximum light intensity.",
+
+        //Minimum (Limit Light Intensity) [172]
+        "Minimum Light Intensity value.",
+
+        //Maximum (Limit Light Intensity) [173]
+        "Maximum Light Intensity value.",
+
+        //Anti-Aliasing Softness (Anti-Aliasing Affects Cutout) (Cutout) [174]
+        "How soft the Anti-Aliasing.",
+
+        //Map Mode (SelfLit) [175]
+        "Use SelfLit Mask as SelfLit Map/Emission Map",
+
+        //SelfLit Map (SelfLit) [176]
+        "A SelfLit Map/Emission Map.\nYou can use Grayscale/alpha or RGB/Colored Map.",
+
+        //Outline Resize (Outline) [177]
+        "Resizing the outline XYZ.",
+
+        //Object Position Z (CS) [178]
+        "Adjust object position z axis in clip space.\n\n*Can also use it to move the object infront or back.\n*Can also be use for adjusting 'Prespective Adjustment - Clip'.",
+
+        //Rimlight In Shadow (Rimlight) [179]
+        "Rim Light in shadow only.",
+
+        //Position (Rimlight) [180]
+        "Rim Light position."
 
         };
 
@@ -990,7 +1063,9 @@ static string add_st_string = "Add 'See Through' feature";
             _UseSecondaryCutout = ShaderGUI.FindProperty("_UseSecondaryCutout", properties);
             _SecondaryCutout = ShaderGUI.FindProperty("_SecondaryCutout", properties);
             _AlphaBaseCutout = ShaderGUI.FindProperty("_AlphaBaseCutout", properties);
+            _AAS = ShaderGUI.FindProperty("_AAS", properties);
             _N_F_SCO = ShaderGUI.FindProperty("_N_F_SCO", properties);
+            _AlpToCov = ShaderGUI.FindProperty("_AlpToCov", properties);
 
             _N_F_COEDGL = ShaderGUI.FindProperty("_N_F_COEDGL", properties);
             _Glow_Color = ShaderGUI.FindProperty("_Glow_Color", properties);
@@ -1014,6 +1089,7 @@ static string add_st_string = "Add 'See Through' feature";
             _OutlineWidthControl = ShaderGUI.FindProperty("_OutlineWidthControl", properties);
             _OutlineExtrudeMethod = ShaderGUI.FindProperty("_OutlineExtrudeMethod", properties);
             _OutlineOffset = ShaderGUI.FindProperty("_OutlineOffset", properties);
+            _OutResi = ShaderGUI.FindProperty("_OutResi", properties);
             _OutlineZPostionInCamera = ShaderGUI.FindProperty("_OutlineZPostionInCamera", properties);
             _DoubleSidedOutline = ShaderGUI.FindProperty("_DoubleSidedOutline", properties);
             _OutlineColor = ShaderGUI.FindProperty("_OutlineColor", properties);
@@ -1024,6 +1100,7 @@ static string add_st_string = "Add 'See Through' feature";
             _OutlineWidthAffectedByViewDistance = ShaderGUI.FindProperty("_OutlineWidthAffectedByViewDistance", properties);
             _FarDistanceMaxWidth = ShaderGUI.FindProperty("_FarDistanceMaxWidth", properties);
             _VertexColorBlueAffectOutlineWitdh = ShaderGUI.FindProperty("_VertexColorBlueAffectOutlineWitdh", properties);
+            _OutStenPass = ShaderGUI.FindProperty("_OutStenPass", properties);
 
             _DepthThreshold = ShaderGUI.FindProperty("_DepthThreshold", properties);
             _N_F_MSSOLTFO = ShaderGUI.FindProperty("_N_F_MSSOLTFO", properties);
@@ -1033,6 +1110,7 @@ static string add_st_string = "Add 'See Through' feature";
             _SelfLitPower = ShaderGUI.FindProperty("_SelfLitPower", properties);
             _TEXMCOLINT = ShaderGUI.FindProperty("_TEXMCOLINT", properties);
             _SelfLitHighContrast = ShaderGUI.FindProperty("_SelfLitHighContrast", properties);
+            _N_F_SLMM = ShaderGUI.FindProperty("_N_F_SLMM", properties);
             _MaskSelfLit = ShaderGUI.FindProperty("_MaskSelfLit", properties);
 
             _GlossIntensity = ShaderGUI.FindProperty("_GlossIntensity", properties);
@@ -1047,6 +1125,11 @@ static string add_st_string = "Add 'See Through' feature";
             _PSGLOTEX = ShaderGUI.FindProperty("_PSGLOTEX", properties);
             _GlossTextureRotate = ShaderGUI.FindProperty("_GlossTextureRotate", properties);
             _GlossTextureFollowObjectRotation = ShaderGUI.FindProperty("_GlossTextureFollowObjectRotation", properties);
+            _N_F_ANIS = ShaderGUI.FindProperty("_N_F_ANIS", properties);
+            _NoisTexInten = ShaderGUI.FindProperty("_NoisTexInten", properties);
+            _StraWidt = ShaderGUI.FindProperty("_StraWidt", properties);
+            _NoiTexAffStraWidt = ShaderGUI.FindProperty("_NoiTexAffStraWidt", properties);
+            _ShifAnis = ShaderGUI.FindProperty("_ShifAnis", properties);
             _GlossTextureFollowLight = ShaderGUI.FindProperty("_GlossTextureFollowLight", properties);
 
             _OverallShadowColor = ShaderGUI.FindProperty("_OverallShadowColor", properties);
@@ -1111,6 +1194,10 @@ static string add_st_string = "Add 'See Through' feature";
             _PointSpotlightIntensity = ShaderGUI.FindProperty("_PointSpotlightIntensity", properties);
             _LightFalloffSoftness = ShaderGUI.FindProperty("_LightFalloffSoftness", properties);
 
+            _N_F_LLI = ShaderGUI.FindProperty("_N_F_LLI", properties);
+            _LLI_Min = ShaderGUI.FindProperty("_LLI_Min", properties);
+            _LLI_Max = ShaderGUI.FindProperty("_LLI_Max", properties);
+
             _ReduSha = ShaderGUI.FindProperty("_ReduSha", properties);
             _ShadowHardness = ShaderGUI.FindProperty("_ShadowHardness", properties);
 
@@ -1119,7 +1206,7 @@ static string add_st_string = "Add 'See Through' feature";
             _CustomLightDirection = ShaderGUI.FindProperty("_CustomLightDirection", properties);
 
             _ReflectionIntensity = ShaderGUI.FindProperty("_ReflectionIntensity", properties);
-            _ReflectionRoughtness = ShaderGUI.FindProperty("_ReflectionRoughtness", properties);
+            _Smoothness = ShaderGUI.FindProperty("_Smoothness", properties);
             _RefMetallic = ShaderGUI.FindProperty("_RefMetallic", properties);
             _MaskReflection = ShaderGUI.FindProperty("_MaskReflection", properties);
             _FReflection = ShaderGUI.FindProperty("_FReflection", properties);
@@ -1129,8 +1216,10 @@ static string add_st_string = "Add 'See Through' feature";
             _RimLightColor = ShaderGUI.FindProperty("_RimLightColor", properties);
             _RimLightColorPower = ShaderGUI.FindProperty("_RimLightColorPower", properties);
             _RimLightSoftness = ShaderGUI.FindProperty("_RimLightSoftness", properties);
+            _RimLigPosi = ShaderGUI.FindProperty("_RimLigPosi", properties);
             _RimLightInLight = ShaderGUI.FindProperty("_RimLightInLight", properties);
             _LightAffectRimLightColor = ShaderGUI.FindProperty("_LightAffectRimLightColor", properties);
+            _N_F_RLIS = ShaderGUI.FindProperty("_N_F_RLIS", properties);
 
             _MinFadDistance = ShaderGUI.FindProperty("_MinFadDistance", properties);
             _MaxFadDistance = ShaderGUI.FindProperty("_MaxFadDistance", properties);
@@ -1198,6 +1287,7 @@ static string add_st_string = "Add 'See Through' feature";
             _N_F_HDLS = ShaderGUI.FindProperty("_N_F_HDLS", properties);
             _N_F_HPSS = ShaderGUI.FindProperty("_N_F_HPSS", properties);
             _N_F_DCS = ShaderGUI.FindProperty("_N_F_DCS", properties);
+            _ObjePosiZCS = ShaderGUI.FindProperty("_ObjePosiZCS", properties);
             _ZWrite = ShaderGUI.FindProperty("_ZWrite", properties);
 
             _N_F_NLASOBF = ShaderGUI.FindProperty("_N_F_NLASOBF", properties);
@@ -1443,6 +1533,14 @@ static string add_st_string = "Add 'See Through' feature";
 
                             EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
 
+                            materialEditor.ShaderProperty(_AlpToCov, new GUIContent(_AlpToCov.displayName, TOTIPS[164]));
+
+                            EditorGUI.BeginDisabledGroup(_AlpToCov.floatValue == 0.0f);
+                            materialEditor.ShaderProperty(_AAS, new GUIContent(_AAS.displayName, TOTIPS[174]));
+                            EditorGUI.EndDisabledGroup();
+
+                            EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
+
                             materialEditor.ShaderProperty(_UseSecondaryCutout, new GUIContent(_UseSecondaryCutout.displayName, TOTIPS[19]));
                             materialEditor.ShaderProperty(_SecondaryCutout, new GUIContent(_SecondaryCutout.displayName, TOTIPS[20]));
 
@@ -1616,6 +1714,9 @@ static string add_st_string = "Add 'See Through' feature";
                                 materialEditor.ShaderProperty(_OutlineOffset, new GUIContent(_OutlineOffset.displayName, TOTIPS[30]));
 
                                 EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
+                                materialEditor.ShaderProperty(_OutResi, new GUIContent(_OutResi.displayName, TOTIPS[177]));
+
+                                EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
                                 materialEditor.ShaderProperty(_OutlineZPostionInCamera, new GUIContent(_OutlineZPostionInCamera.displayName, TOTIPS[123]));
 
                                 EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
@@ -1659,6 +1760,12 @@ static string add_st_string = "Add 'See Through' feature";
                                 materialEditor.ShaderProperty(_DepthThreshold, new GUIContent(_DepthThreshold.displayName, TOTIPS[122]));
                                 EditorGUI.EndDisabledGroup();
 
+                            }
+
+                            if (add_st == true)
+                            {
+                                EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
+                                materialEditor.ShaderProperty(_OutStenPass, new GUIContent(_OutStenPass.displayName, TOTIPS[170]));
                             }
 
                             EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
@@ -1710,12 +1817,24 @@ static string add_st_string = "Add 'See Through' feature";
 
                         EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
 
-                        materialEditor.ShaderProperty(_SelfLitHighContrast, new GUIContent(_SelfLitHighContrast.displayName, TOTIPS[44]));
+                        EditorGUI.BeginDisabledGroup(_N_F_SLMM.floatValue == 1);
+                            materialEditor.ShaderProperty(_SelfLitHighContrast, new GUIContent(_SelfLitHighContrast.displayName, TOTIPS[44]));
+                        EditorGUI.EndDisabledGroup();
 
                         EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
 
-                        materialEditor.ShaderProperty(_MaskSelfLit, new GUIContent(_MaskSelfLit.displayName, TOTIPS[45]));
+                        materialEditor.ShaderProperty(_N_F_SLMM, new GUIContent(_N_F_SLMM.displayName, TOTIPS[175]));
 
+                        GUILayout.Space(1);
+
+                        if (_N_F_SLMM.floatValue == 1)
+                        {
+                            materialEditor.ShaderProperty(_MaskSelfLit, new GUIContent("Self Lit Map", TOTIPS[176]));
+                        }
+                        else
+                        {
+                            materialEditor.ShaderProperty(_MaskSelfLit, new GUIContent(_MaskSelfLit.displayName, TOTIPS[45]));
+                        }
 
                         GUILayout.Space(10);
 
@@ -1746,10 +1865,12 @@ static string add_st_string = "Add 'See Through' feature";
                             GUILayout.Space(10);
 
                             materialEditor.ShaderProperty(_GlossIntensity, new GUIContent(_GlossIntensity.displayName, TOTIPS[46]));
+
                             EditorGUI.BeginDisabledGroup(_N_F_GLOT.floatValue == 1);
                             materialEditor.ShaderProperty(_Glossiness, new GUIContent(_Glossiness.displayName, TOTIPS[47]));
-                            materialEditor.ShaderProperty(_GlossSoftness, new GUIContent(_GlossSoftness.displayName, TOTIPS[48]));
                             EditorGUI.EndDisabledGroup();
+
+                            materialEditor.ShaderProperty(_GlossSoftness, new GUIContent(_GlossSoftness.displayName, TOTIPS[48]));
 
                             EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
 
@@ -1783,22 +1904,48 @@ static string add_st_string = "Add 'See Through' feature";
                                     materialEditor.ShaderProperty(_GlossTexture, new GUIContent(_GlossTexture.displayName, TOTIPS[52]));
 
                                     EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
-                                    EditorGUI.BeginDisabledGroup(_GlossTexture.textureValue == null);
-                                    materialEditor.ShaderProperty(_GlossTextureSoftness, new GUIContent(_GlossTextureSoftness.displayName, TOTIPS[53]));
+
+                                    materialEditor.ShaderProperty(_N_F_ANIS, new GUIContent(_N_F_ANIS.displayName, TOTIPS[165]));
 
                                     EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
 
-                                    materialEditor.ShaderProperty(_PSGLOTEX, new GUIContent(_PSGLOTEX.displayName, TOTIPS[54]));
 
-                                    EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
+                                    if (_N_F_ANIS.floatValue == 1)
+                                    {
 
-                                    EditorGUI.BeginDisabledGroup(_PSGLOTEX.floatValue == 1);
-                                    materialEditor.ShaderProperty(_GlossTextureRotate, new GUIContent(_GlossTextureRotate.displayName, TOTIPS[55]));
-                                    materialEditor.ShaderProperty(_GlossTextureFollowObjectRotation, new GUIContent(_GlossTextureFollowObjectRotation.displayName, TOTIPS[56]));
-                                    materialEditor.ShaderProperty(_GlossTextureFollowLight, new GUIContent(_GlossTextureFollowLight.displayName, TOTIPS[57]));
-                                    EditorGUI.EndDisabledGroup();
+                                        materialEditor.ShaderProperty(_NoisTexInten, new GUIContent(_NoisTexInten.displayName, TOTIPS[166]));
 
-                                    EditorGUI.EndDisabledGroup();
+                                        EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
+
+                                        materialEditor.ShaderProperty(_StraWidt, new GUIContent(_StraWidt.displayName, TOTIPS[167]));
+                                        materialEditor.ShaderProperty(_NoiTexAffStraWidt, new GUIContent(_NoiTexAffStraWidt.displayName, TOTIPS[169]));
+
+                                        EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
+
+                                        materialEditor.ShaderProperty(_ShifAnis, new GUIContent(_ShifAnis.displayName, TOTIPS[168]));
+                                        materialEditor.ShaderProperty(_GlossTextureFollowLight, new GUIContent(_GlossTextureFollowLight.displayName, TOTIPS[57]));
+
+                                    }
+                                    else if (_N_F_ANIS.floatValue == 0)
+                                    {
+
+                                        EditorGUI.BeginDisabledGroup(_GlossTexture.textureValue == null);
+                                        materialEditor.ShaderProperty(_GlossTextureSoftness, new GUIContent(_GlossTextureSoftness.displayName, TOTIPS[53]));
+
+                                        EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
+
+                                        materialEditor.ShaderProperty(_PSGLOTEX, new GUIContent(_PSGLOTEX.displayName, TOTIPS[54]));
+
+                                        EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
+
+                                        EditorGUI.BeginDisabledGroup(_PSGLOTEX.floatValue == 1);
+                                        materialEditor.ShaderProperty(_GlossTextureRotate, new GUIContent(_GlossTextureRotate.displayName, TOTIPS[55]));
+                                        materialEditor.ShaderProperty(_GlossTextureFollowObjectRotation, new GUIContent(_GlossTextureFollowObjectRotation.displayName, TOTIPS[56]));
+                                        materialEditor.ShaderProperty(_GlossTextureFollowLight, new GUIContent(_GlossTextureFollowLight.displayName, TOTIPS[57]));
+                                        EditorGUI.EndDisabledGroup();
+
+                                        EditorGUI.EndDisabledGroup();
+                                    }
 
                                 }
 
@@ -2135,6 +2282,14 @@ static string add_st_string = "Add 'See Through' feature";
                         materialEditor.ShaderProperty(_LightFalloffSoftness, new GUIContent(_LightFalloffSoftness.displayName, TOTIPS[97]));
                         EditorGUI.EndDisabledGroup();
 
+                        EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
+                        materialEditor.ShaderProperty(_N_F_LLI, new GUIContent(_N_F_LLI.displayName, TOTIPS[171]));
+                        GUILayout.Space(5);
+                        EditorGUI.BeginDisabledGroup(_N_F_LLI.floatValue == 0);
+                        materialEditor.ShaderProperty(_LLI_Min, new GUIContent(_LLI_Min.displayName, TOTIPS[172]));
+                        materialEditor.ShaderProperty(_LLI_Max, new GUIContent(_LLI_Max.displayName, TOTIPS[173]));
+                        EditorGUI.EndDisabledGroup();
+
                         GUILayout.Space(10);
 
                         //Custom Light Direction
@@ -2197,7 +2352,7 @@ static string add_st_string = "Add 'See Through' feature";
                         GUILayout.Space(10);
 
                         materialEditor.ShaderProperty(_ReflectionIntensity, new GUIContent(_ReflectionIntensity.displayName, TOTIPS[101]));
-                        materialEditor.ShaderProperty(_ReflectionRoughtness, new GUIContent(_ReflectionRoughtness.displayName, TOTIPS[102]));
+                        materialEditor.ShaderProperty(_Smoothness, new GUIContent(_Smoothness.displayName, TOTIPS[102]));
                         materialEditor.ShaderProperty(_RefMetallic, new GUIContent(_RefMetallic.displayName, TOTIPS[103]));
 
                         EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
@@ -2260,20 +2415,32 @@ static string add_st_string = "Add 'See Through' feature";
 
                         materialEditor.ShaderProperty(_RimLightUnfill, new GUIContent(_RimLightUnfill.displayName, TOTIPS[106]));
                         materialEditor.ShaderProperty(_RimLightSoftness, new GUIContent(_RimLightSoftness.displayName, TOTIPS[107]));
+                        materialEditor.ShaderProperty(_RimLigPosi, new GUIContent(_RimLigPosi.displayName, TOTIPS[180]));
 
                         EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
 
-                        materialEditor.ShaderProperty(_LightAffectRimLightColor, new GUIContent(_LightAffectRimLightColor.displayName, TOTIPS[108]));
+                        EditorGUI.BeginDisabledGroup(_RimLightInLight.floatValue == 1);
+                            materialEditor.ShaderProperty(_LightAffectRimLightColor, new GUIContent(_LightAffectRimLightColor.displayName, TOTIPS[108]));
+                        EditorGUI.EndDisabledGroup();
 
                         EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
 
                         materialEditor.ShaderProperty(_RimLightColor, new GUIContent(_RimLightColor.displayName, TOTIPS[109]));
                         materialEditor.ShaderProperty(_RimLightColorPower, new GUIContent(_RimLightColorPower.displayName, TOTIPS[110]));
 
-                        if (_N_F_OFLMB.floatValue == 0)
+                        EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
+
+                        EditorGUI.BeginDisabledGroup(_N_F_RLIS.floatValue == 1);
+                            if (_N_F_OFLMB.floatValue == 0)
+                            {
+                                materialEditor.ShaderProperty(_RimLightInLight, new GUIContent(_RimLightInLight.displayName, TOTIPS[111]));
+                            }
+                        EditorGUI.EndDisabledGroup();
+
+                        materialEditor.ShaderProperty(_N_F_RLIS, new GUIContent(_N_F_RLIS.displayName, TOTIPS[179]));
+                        if(_N_F_RLIS.floatValue == 1.0)
                         {
-                            EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
-                            materialEditor.ShaderProperty(_RimLightInLight, new GUIContent(_RimLightInLight.displayName, TOTIPS[111]));
+                            targetMat.SetFloat("_RimLightInLight",0.0f);
                         }
 
                         GUILayout.Space(10);
@@ -2541,6 +2708,10 @@ static string add_st_string = "Add 'See Through' feature";
 
                                     m.renderQueue = 3000;
                                     m.SetOverrideTag("RenderType", "Transparent");
+
+                                    m.DisableKeyword("N_F_ATC_ON");
+                                    m.SetFloat("_AlpToCov", 0.0f);
+
                                     break;
 
                                 case 1:
@@ -2767,9 +2938,7 @@ static string add_st_string = "Add 'See Through' feature";
                 }
 
                 materialEditor.ShaderProperty(_ZWrite, new GUIContent(_ZWrite.displayName, TOTIPS[120]));
-
-                GUILayout.Space(10);
-
+                materialEditor.ShaderProperty(_ObjePosiZCS, new GUIContent(_ObjePosiZCS.displayName, TOTIPS[178]));
                 materialEditor.RenderQueueField();
 
                 GUILayout.Space(10);
@@ -2947,15 +3116,26 @@ static string add_st_string = "Add 'See Through' feature";
                 shader_type = "Default";
             }
 
-            if ((material.IsKeywordEnabled("N_F_TRANSAFFSHA") || material.GetFloat("_TransAffSha") == 1.0f))
+            if ((material.IsKeywordEnabled("N_F_TRANSAFFSHA_ON") || material.GetFloat("_TransAffSha") == 1.0f))
             {
-                material.EnableKeyword("N_F_TRANSAFFSHA");
+                material.EnableKeyword("N_F_TRANSAFFSHA_ON");
                 material.SetFloat("_TransAffSha", 1.0f);
             }
-            else if ((!material.IsKeywordEnabled("N_F_TRANSAFFSHA") || material.GetFloat("_TransAffSha") == 0.0f))
+            else if ((!material.IsKeywordEnabled("N_F_TRANSAFFSHA_ON") || material.GetFloat("_TransAffSha") == 0.0f))
             {
-                material.DisableKeyword("N_F_TRANSAFFSHA");
+                material.DisableKeyword("N_F_TRANSAFFSHA_ON");
                 material.SetFloat("_TransAffSha", 0.0f);
+            }
+
+            if ((material.IsKeywordEnabled("N_F_ATC_ON") || material.GetFloat("_AlpToCov") == 1.0f))
+            {
+                material.EnableKeyword("N_F_ATC_ON");
+                material.SetFloat("_AlpToCov", 1.0f);
+            }
+            else if ((!material.IsKeywordEnabled("N_F_ATC_ON") || material.GetFloat("_AlpToCov") == 0.0f))
+            {
+                material.DisableKeyword("N_F_ATC_ON");
+                material.SetFloat("_AlpToCov", 0.0f);
             }
 
             if ((material.IsKeywordEnabled("N_F_OFLMB_ON") || material.GetFloat("_N_F_OFLMB") == 1.0f))
@@ -2989,6 +3169,17 @@ static string add_st_string = "Add 'See Through' feature";
             {
                 material.DisableKeyword("N_F_DDMD_ON");
                 material.SetFloat("_N_F_DDMD", 0.0f);
+            }
+
+            if ((material.IsKeywordEnabled("N_F_RLIS_ON") || material.GetFloat("_N_F_RLIS") == 1.0f))
+            {
+                material.EnableKeyword("N_F_RLIS_ON");
+                material.SetFloat("_N_F_RLIS", 1.0f);
+            }
+            else if ((!material.IsKeywordEnabled("N_F_RLIS_ON") || material.GetFloat("_N_F_RLIS") == 0.0f))
+            {
+                material.DisableKeyword("N_F_RLIS_ON");
+                material.SetFloat("_N_F_RLIS", 0.0f);
             }
 
             //======================================================================================================
@@ -3096,6 +3287,17 @@ static string add_st_string = "Add 'See Through' feature";
                 material.DisableKeyword("N_F_SL_ON");
                 material.SetFloat("_N_F_SL", 0.0f);
                 material.globalIlluminationFlags = MaterialGlobalIlluminationFlags.None;
+            }
+
+            if ((material.IsKeywordEnabled("N_F_SLMM_ON") || material.GetFloat("_N_F_SLMM") == 1.0f))
+            {
+                material.EnableKeyword("N_F_SLMM_ON");
+                material.SetFloat("_N_F_SLMM", 1.0f);
+            }
+            else if ((!material.IsKeywordEnabled("N_F_SLMM_ON") || material.GetFloat("_N_F_SLMM") == 0.0f))
+            {
+                material.DisableKeyword("N_F_SLMM_ON");
+                material.SetFloat("_N_F_SLMM", 0.0f);
             }
 
             if ((material.IsKeywordEnabled("N_F_GLO_ON") || material.GetFloat("_N_F_GLO") == 1.0f))
@@ -3254,6 +3456,17 @@ static string add_st_string = "Add 'See Through' feature";
 
             //======================================================================================================
 
+            if ((material.IsKeywordEnabled("N_F_ANIS_ON") || material.GetFloat("_N_F_ANIS") == 1.0f))
+            {
+                material.EnableKeyword("N_F_ANIS_ON");
+                material.SetFloat("_N_F_ANIS", 1.0f);
+            }
+            else if ((!material.IsKeywordEnabled("N_F_ANIS_ON") || material.GetFloat("_N_F_ANIS") == 0.0f))
+            {
+                material.DisableKeyword("N_F_ANIS_ON");
+                material.SetFloat("_N_F_ANIS", 0.0f);
+            }
+
             if ((material.IsKeywordEnabled("N_F_ESSAO_ON") || material.GetFloat("_N_F_ESSAO") == 1.0f))
             {
                 material.EnableKeyword("N_F_ESSAO_ON");
@@ -3296,6 +3509,17 @@ static string add_st_string = "Add 'See Through' feature";
             {
                 material.DisableKeyword("N_F_EAL_ON");
                 material.SetFloat("_N_F_EAL", 0.0f);
+            }
+
+            if ((material.IsKeywordEnabled("N_F_LLI_ON") || material.GetFloat("_N_F_LLI") == 1.0f))
+            {
+                material.EnableKeyword("N_F_LLI_ON");
+                material.SetFloat("_N_F_LLI", 1.0f);
+            }
+            else if ((!material.IsKeywordEnabled("N_F_LLI_ON") || material.GetFloat("_N_F_LLI") == 0.0f))
+            {
+                material.DisableKeyword("N_F_LLI_ON");
+                material.SetFloat("_N_F_LLI", 0.0f);
             }
 
             if ((material.IsKeywordEnabled("N_F_HDLS_ON") || material.GetFloat("_N_F_HDLS") == 1.0f))
@@ -3758,7 +3982,7 @@ static string add_st_string = "Add 'See Through' feature";
                 ChanLi("/*//O_ST", "//O_ST/*", "Assets/RealToon/RealToon Shaders/Version 5/URP/Default/D_Default_URP.shader");
                 ChanLi("/*//F_ST", "//F_ST/*", "Assets/RealToon/RealToon Shaders/Version 5/URP/Default/D_Default_URP.shader");
                 ChanLi("/*//G_ST", "//G_ST/*", "Assets/RealToon/RealToon Shaders/Version 5/URP/Default/D_Default_URP.shader");
-                ChanLi("Pass Invert//O_PI", "//Pass Invert//O_PI", "Assets/RealToon/RealToon Shaders/Version 5/URP/Default/D_Default_URP.shader");
+                ChanLi("Pass [_OutStenPass]//O_PI", "//Pass [_OutStenPass]//O_PI", "Assets/RealToon/RealToon Shaders/Version 5/URP/Default/D_Default_URP.shader");
 
                 AssetDatabase.ImportAsset("Assets/RealToon/RealToon Shaders/Version 5/URP/Default/D_Default_URP.shader");
                 AssetDatabase.ImportAsset("Assets/RealToon/Editor/RealToonShaderGUI_URP_SRP.cs");
@@ -3768,7 +3992,7 @@ static string add_st_string = "Add 'See Through' feature";
             {
                 ChanLi("static bool add_st = false;", "static bool add_st = true;", "Assets/RealToon/Editor/RealToonShaderGUI_URP_SRP.cs");
                 ChanLi("static string add_st_string = " + (char)34 + "Remove 'See Through' feature" + (char)34 + ";", "static string add_st_string = " + (char)34 + "Add 'See Through' feature" + (char)34 + ";", "Assets/RealToon/Editor/RealToonShaderGUI_URP_SRP.cs");
-                ChanLi("//Pass Invert//O_PI", "Pass Invert//O_PI", "Assets/RealToon/RealToon Shaders/Version 5/URP/Default/D_Default_URP.shader");
+                ChanLi("//Pass [_OutStenPass]//O_PI", "Pass [_OutStenPass]//O_PI", "Assets/RealToon/RealToon Shaders/Version 5/URP/Default/D_Default_URP.shader");
 
                 ChanLi("//O_ST/*", "/*//O_ST", "Assets/RealToon/RealToon Shaders/Version 5/URP/Default/D_Default_URP.shader");
                 ChanLi("//F_ST/*", "/*//F_ST", "Assets/RealToon/RealToon Shaders/Version 5/URP/Default/D_Default_URP.shader");
