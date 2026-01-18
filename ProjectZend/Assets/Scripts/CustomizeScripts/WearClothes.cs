@@ -7,11 +7,18 @@ public class WearClothes : MonoBehaviour
     [SerializeField] SkinnedMeshRenderer hair;
     //[SerializeField] private SkinnedMeshRenderer playerBody;
     private GameObject clothing1;
-    [SerializeField] private GameObject[] tops;
+    //[SerializeField] private GameObject[] tops;
+    private List<GameObject> tops = new List<GameObject>();
     private GameObject currentTop;
     private int currentTopIndex=0;
     private void Start() {
-        PutOn(clothing1);
+        GetSets();
+        //PutOn(clothing1);
+    }
+    private void GetSets() {
+        foreach (GameObject go in Resources.LoadAll<GameObject>("Tops Assets")) {
+            tops.Add(go);
+        }
     }
     public void PutOn(GameObject clothingPrefab) {
         // 1. Instantiate the hoodie
