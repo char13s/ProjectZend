@@ -4,8 +4,10 @@ using UnityEngine;
 public class WearClothes : MonoBehaviour
 {
     [SerializeField] GameObject mainBody;
+    [SerializeField] SkinnedMeshRenderer hair;
     //[SerializeField] private SkinnedMeshRenderer playerBody;
     [SerializeField] private GameObject clothing1;
+    [SerializeField] private GameObject[] tops;
     private void Start() {
         PutOn(clothing1);
     }
@@ -53,12 +55,20 @@ public class WearClothes : MonoBehaviour
             sRenderer.updateWhenOffscreen = true;
         }
 
-        // 5. THE FIX: Instead of destroying the Root, we just hide it.
+        // 5. Instead of destroying the Root, we just hide it.
         // This keeps the 'Transform' alive so the UniVRM scripts don't throw errors,
         // but it removes the "ghost" skeleton from your scene view.
         Transform hoodieRoot = instance.transform.Find("Root");
         if (hoodieRoot != null) {
             hoodieRoot.gameObject.SetActive(false);
         }
+    }
+    private void ChangeColor(Color temp) {
+        print("HairSwapButton selected");
+
+        hair.material.color = temp;
+       // hairMaterial = hair.material;
+       // hair.color = temp;
+       // hair.material = hairMaterial;
     }
 }
