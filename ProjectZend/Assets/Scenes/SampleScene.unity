@@ -704,8 +704,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mainBody: {fileID: 1401087569}
   hair: {fileID: 0}
-  clothing1: {fileID: -1728013695380148634, guid: 62ce92f39fadee249af76adf417dd0d2, type: 3}
-  tops: []
 --- !u!4 &89209453
 Transform:
   m_ObjectHideFlags: 0
@@ -5661,91 +5659,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 663777925}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1001 &999151832
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: -5694092435888646316, guid: 62ce92f39fadee249af76adf417dd0d2, type: 3}
-      propertyPath: m_DirtyAABB
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: -5694092435888646316, guid: 62ce92f39fadee249af76adf417dd0d2, type: 3}
-      propertyPath: m_AABB.m_Center.x
-      value: -0.02277188
-      objectReference: {fileID: 0}
-    - target: {fileID: -5694092435888646316, guid: 62ce92f39fadee249af76adf417dd0d2, type: 3}
-      propertyPath: m_AABB.m_Center.y
-      value: 0.9629425
-      objectReference: {fileID: 0}
-    - target: {fileID: -5694092435888646316, guid: 62ce92f39fadee249af76adf417dd0d2, type: 3}
-      propertyPath: m_AABB.m_Center.z
-      value: -0.025819793
-      objectReference: {fileID: 0}
-    - target: {fileID: -5694092435888646316, guid: 62ce92f39fadee249af76adf417dd0d2, type: 3}
-      propertyPath: m_AABB.m_Extent.x
-      value: 0.33490336
-      objectReference: {fileID: 0}
-    - target: {fileID: -5694092435888646316, guid: 62ce92f39fadee249af76adf417dd0d2, type: 3}
-      propertyPath: m_AABB.m_Extent.y
-      value: 0.33514515
-      objectReference: {fileID: 0}
-    - target: {fileID: -5694092435888646316, guid: 62ce92f39fadee249af76adf417dd0d2, type: 3}
-      propertyPath: m_AABB.m_Extent.z
-      value: 0.20604552
-      objectReference: {fileID: 0}
-    - target: {fileID: -1728013695380148634, guid: 62ce92f39fadee249af76adf417dd0d2, type: 3}
-      propertyPath: m_Name
-      value: Ripped Hoodie
-      objectReference: {fileID: 0}
-    - target: {fileID: 5159078012444724336, guid: 62ce92f39fadee249af76adf417dd0d2, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0.014809251
-      objectReference: {fileID: 0}
-    - target: {fileID: 5159078012444724336, guid: 62ce92f39fadee249af76adf417dd0d2, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: -0.01999998
-      objectReference: {fileID: 0}
-    - target: {fileID: 5159078012444724336, guid: 62ce92f39fadee249af76adf417dd0d2, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: -0.72779655
-      objectReference: {fileID: 0}
-    - target: {fileID: 5159078012444724336, guid: 62ce92f39fadee249af76adf417dd0d2, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5159078012444724336, guid: 62ce92f39fadee249af76adf417dd0d2, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5159078012444724336, guid: 62ce92f39fadee249af76adf417dd0d2, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5159078012444724336, guid: 62ce92f39fadee249af76adf417dd0d2, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5159078012444724336, guid: 62ce92f39fadee249af76adf417dd0d2, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5159078012444724336, guid: 62ce92f39fadee249af76adf417dd0d2, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5159078012444724336, guid: 62ce92f39fadee249af76adf417dd0d2, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: -3956505258223990651, guid: 62ce92f39fadee249af76adf417dd0d2, type: 3}
 --- !u!1 &1014041309
 GameObject:
   m_ObjectHideFlags: 0
@@ -5859,6 +5772,10 @@ PrefabInstance:
       propertyPath: m_AABB.m_Extent.z
       value: 0.15102577
       objectReference: {fileID: 0}
+    - target: {fileID: -5694092435888646316, guid: 79794a45a2a369146af6b8210420d1d5, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 68ff056aae549064ca71393c636b1c95, type: 2}
     - target: {fileID: -1728013695380148634, guid: 79794a45a2a369146af6b8210420d1d5, type: 3}
       propertyPath: m_Name
       value: Customizable Zend 2
@@ -14399,6 +14316,5 @@ SceneRoots:
   - {fileID: 332016671}
   - {fileID: 960519971}
   - {fileID: 89209453}
-  - {fileID: 999151832}
   - {fileID: 1036074105}
   - {fileID: 1854033995}
