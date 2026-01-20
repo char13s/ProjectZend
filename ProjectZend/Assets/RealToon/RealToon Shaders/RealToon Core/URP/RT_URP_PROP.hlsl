@@ -987,6 +987,13 @@ SAMPLER(sampler_MaskTransparency);
 TEXTURE2D(_OutlineWidthControl);
 SAMPLER(sampler_OutlineWidthControl);
 
+// Custom Body Masking Properties
+TEXTURE2D(_MaskMap); SAMPLER(sampler_MaskMap);
+float _Hide_Arms;
+float _Hide_Torso;
+float _Hide_UpperLegs;
+float _Hide_LowerLegs;
+
 #if N_F_MC_ON
 	TEXTURE2D(_MCap);
 	SAMPLER(sampler_MCap);

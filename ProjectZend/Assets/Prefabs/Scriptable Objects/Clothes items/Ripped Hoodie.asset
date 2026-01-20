@@ -14,5 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemName: Ripped Hoodie
   clothingPrefab: {fileID: -1728013695380148634, guid: ba9904273cccbb9419bb9d198c5d7b9c, type: 3}
-  needsFullArms: 1
-  hidesLegs: 0
+  hideArms: 0
+  hideTorso: 1
+  hideUpperLegs: 0
+  hideLowerLegs: 0

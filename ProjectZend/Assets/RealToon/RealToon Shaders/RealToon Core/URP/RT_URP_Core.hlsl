@@ -7,6 +7,23 @@
 #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/DeclareDepthTexture.hlsl"
 #include "Assets/RealToon/RealToon Shaders/RealToon Core/URP/RT_URP_PROP.hlsl"
 
+// Custom Body Masking Logic
+half CalculateBodyMask(float2 uv, float4 maskMap) {
+	// Isolate channels using the subtraction method we built
+	float isArm = saturate(maskMap.r - maskMap.b);
+	float isTorso = saturate(maskMap.g - maskMap.b);
+	float isUpper = saturate(maskMap.b - maskMap.r);
+	// White detection for lower legs/feet
+	float isLower = (maskMap.r > 0.5 && maskMap.g > 0.5 && maskMap.b > 0.5) ? 1.0 : 0.0;
+
+	// Combine with the global toggles
+	float finalMask = (isArm * _Hide_Arms) +
+		(isTorso * _Hide_Torso) +
+		(isUpper * _Hide_UpperLegs) +
+		(isLower * _Hide_LowerLegs);
+	return finalMask;
+}
+
 half RTD_LVLC_F(float3 Light_Color_f3)
 {
 	#ifdef SHADER_API_MOBILE
@@ -425,6 +442,24 @@ void RT_TRANS_CO(float2 uv, half4 _MainTex_var, out half _MainTex_var_a, out hal
 
 }
 //
+// Custom Body Masking Calculation
+half CalculateBodyMask(float2 uv) {
+	float4 maskMap = SAMPLE_TEXTURE2D(_MaskMap, sampler_MaskMap, uv);
+
+	// Isolate channels using the subtraction method
+	float isArm = saturate(maskMap.r - maskMap.b);
+	float isTorso = saturate(maskMap.g - maskMap.b);
+	float isUpper = saturate(maskMap.b - maskMap.r);
+	// White detection for lower legs (feet)
+	float isLower = (maskMap.r > 0.5 && maskMap.g > 0.5 && maskMap.b > 0.5) ? 1.0 : 0.0;
+
+	// Combine with the script toggles
+	float finalMask = (isArm * _Hide_Arms) +
+		(isTorso * _Hide_Torso) +
+		(isUpper * _Hide_UpperLegs) +
+		(isLower * _Hide_LowerLegs);
+	return finalMask;
+}
 
 //RT_CO
 void RT_CO(float2 uv, half4 _MainTex_var, out half _MainTex_var_a, float3 positionWS, float3 normalDirection, float2 positionCS)
@@ -476,7 +511,15 @@ void RT_CO(float2 uv, half4 _MainTex_var, out half _MainTex_var_a, float3 positi
 				#ifdef N_F_SCO_ON
 					clip( -( RT_Dither_Out(positionCS) - RTD_CO_ON ));
 				#else
-					clip(RTD_CO_ON - 0.5);
+
+			// --- START CUSTOM MASK ---
+			float4 maskMap = SAMPLE_TEXTURE2D(_MaskMap, sampler_MaskMap, uv);
+			float bodyMask = CalculateBodyMask(uv, maskMap);
+
+			// If bodyMask is 1, it forces the value below 0, triggering the clip
+			clip((RTD_CO_ON - 0.5) - bodyMask);
+			// --- END CUSTOM MASK ---
+
 				#endif
 
 			#endif

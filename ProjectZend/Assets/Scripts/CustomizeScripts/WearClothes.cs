@@ -11,10 +11,26 @@ public class WearClothes : MonoBehaviour
     private List<GameObject> tops = new List<GameObject>();
     private GameObject currentTop;
     private int currentTopIndex=0;
+    [SerializeField] private ClothingItem test;
     private Material skinMaterial;
+    public Texture2D masterSkinMask;
+
+    public GameObject CurrentTop { get => currentTop; set { currentTop = value; } }
+
+    private void Awake() {
+        Transform bodyMesh = mainBody.transform.Find("Body");
+        if (bodyMesh != null) {
+            skinMaterial = bodyMesh.GetComponent<SkinnedMeshRenderer>().material;
+            // APPLY THE MASK AUTOMATICALLY ON START
+            if (masterSkinMask != null) {
+                skinMaterial.SetTexture("_MaskMap", masterSkinMask);
+            }
+        }
+    }
     private void Start() {
         GetSets();
-        //PutOn(clothing1);
+        AttachClothing(test);
+        //PutOn(test.clothingPrefab);
     }
     private void GetSets() {
         foreach (GameObject go in Resources.LoadAll<GameObject>("Tops Assets")) {
@@ -75,49 +91,54 @@ public class WearClothes : MonoBehaviour
         //SetSkinMask(clothingPrefab);
     }
     public void AttachClothing(ClothingItem item) {
-        // 1. Remove previous clothing
         if (currentTop != null) Destroy(currentTop);
 
-        // 2. Spawn the new clothing
         currentTop = Instantiate(item.clothingPrefab, mainBody.transform);
         currentTop.transform.localPosition = Vector3.zero;
         currentTop.transform.localRotation = Quaternion.identity;
 
-        // 3. Prevent UniVRM scripts from crashing by disabling them on the clone
-        MonoBehaviour[] vrmScripts = currentTop.GetComponentsInChildren<MonoBehaviour>();
-        foreach (var script in vrmScripts) {
+        // 1. Disable VRM scripts to prevent errors
+        foreach (var script in currentTop.GetComponentsInChildren<MonoBehaviour>()) {
             if (!(script is SkinnedMeshRenderer)) script.enabled = false;
         }
 
-        // 4. Run the bone re-mapping logic
-        ApplyBonesToClothing(currentTop);
+        // 2. RUN THE FIXED BONE MAPPING
+        ApplyBones(currentTop);
 
-        // 5. CALL THE MASKING LOGIC
+        // 3. Update Masking
         SetSkinMask(item);
     }
-    private void ApplyBonesToClothing(GameObject clothingInstance) {
+
+    private void ApplyBones(GameObject instance) {
         SkinnedMeshRenderer bodyRenderer = mainBody.GetComponentInChildren<SkinnedMeshRenderer>();
 
-        // Map master bones into a dictionary for speed
+        // Map the Body's bones
         Dictionary<string, Transform> masterBones = new Dictionary<string, Transform>();
         foreach (Transform b in bodyRenderer.bones) masterBones[b.name] = b;
 
-        // Apply bones to all parts of the clothing (e.g., Hoodie and Strings)
-        SkinnedMeshRenderer[] cRenderers = clothingInstance.GetComponentsInChildren<SkinnedMeshRenderer>();
-        foreach (var renderer in cRenderers) {
-            Transform[] newBones = new Transform[renderer.bones.Length];
-            for (int i = 0; i < renderer.bones.Length; i++) {
-                string boneName = renderer.bones[i].name;
-                newBones[i] = masterBones.ContainsKey(boneName) ? masterBones[boneName] : bodyRenderer.rootBone;
-            }
-            renderer.bones = newBones;
-            renderer.rootBone = bodyRenderer.rootBone;
-            renderer.updateWhenOffscreen = true;
-        }
+        SkinnedMeshRenderer[] clothingRenderers = instance.GetComponentsInChildren<SkinnedMeshRenderer>();
 
-        // Hide the hoodie's internal skeleton root to stop it from showing up in the scene
-        Transform internalRoot = clothingInstance.transform.Find("Root");
-        if (internalRoot) internalRoot.gameObject.SetActive(false);
+        foreach (var cRenderer in clothingRenderers) {
+            Transform[] newBones = new Transform[cRenderer.bones.Length];
+
+            for (int i = 0; i < cRenderer.bones.Length; i++) {
+                string boneName = cRenderer.bones[i].name;
+
+                if (masterBones.ContainsKey(boneName)) {
+                    // If the body has this bone, follow the body
+                    newBones[i] = masterBones[boneName];
+                }
+                else {
+                    // FIX: If the body DOESN'T have this bone (like Drawstrings),
+                    // keep its original bone so it doesn't stretch to the floor!
+                    newBones[i] = cRenderer.bones[i];
+                }
+            }
+
+            cRenderer.bones = newBones;
+            cRenderer.rootBone = bodyRenderer.rootBone;
+            cRenderer.updateWhenOffscreen = true;
+        }
     }
     private void ChangeColor(Color temp) {
         print("HairSwapButton selected");
@@ -128,14 +149,14 @@ public class WearClothes : MonoBehaviour
        // hair.material = hairMaterial;
     }
     void OnSwap(int val) {
-        if (currentTop != null) {
-            Destroy(currentTop);
+        if (CurrentTop != null) {
+            Destroy(CurrentTop);
         }
         currentTopIndex += val;
         if (currentTopIndex == tops.Count) {
             currentTopIndex = 0;
         }
-        currentTop = tops[currentTopIndex];
+        CurrentTop = tops[currentTopIndex];
     }
     public void SetSkinMask(ClothingItem item) {
         if (skinMaterial == null) return;
