@@ -6238,6 +6238,42 @@ PrefabInstance:
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
       objectReference: {fileID: 2100000, guid: c70b64363e5057843bd37bc28cb1ba08, type: 2}
+    - target: {fileID: -5694092435888646316, guid: 79794a45a2a369146af6b8210420d1d5, type: 3}
+      propertyPath: 'm_Materials.Array.data[2]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 2c060097b7634164784c5ad8d1bb4c01, type: 2}
+    - target: {fileID: -2599908320530139495, guid: 79794a45a2a369146af6b8210420d1d5, type: 3}
+      propertyPath: m_DirtyAABB
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -2599908320530139495, guid: 79794a45a2a369146af6b8210420d1d5, type: 3}
+      propertyPath: m_AABB.m_Center.x
+      value: -0.000000029802322
+      objectReference: {fileID: 0}
+    - target: {fileID: -2599908320530139495, guid: 79794a45a2a369146af6b8210420d1d5, type: 3}
+      propertyPath: m_AABB.m_Center.y
+      value: 0.7103223
+      objectReference: {fileID: 0}
+    - target: {fileID: -2599908320530139495, guid: 79794a45a2a369146af6b8210420d1d5, type: 3}
+      propertyPath: m_AABB.m_Center.z
+      value: -0.011440724
+      objectReference: {fileID: 0}
+    - target: {fileID: -2599908320530139495, guid: 79794a45a2a369146af6b8210420d1d5, type: 3}
+      propertyPath: m_AABB.m_Extent.x
+      value: 0.627957
+      objectReference: {fileID: 0}
+    - target: {fileID: -2599908320530139495, guid: 79794a45a2a369146af6b8210420d1d5, type: 3}
+      propertyPath: m_AABB.m_Extent.y
+      value: 0.71117896
+      objectReference: {fileID: 0}
+    - target: {fileID: -2599908320530139495, guid: 79794a45a2a369146af6b8210420d1d5, type: 3}
+      propertyPath: m_AABB.m_Extent.z
+      value: 0.15102544
+      objectReference: {fileID: 0}
+    - target: {fileID: -2599908320530139495, guid: 79794a45a2a369146af6b8210420d1d5, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: c70b64363e5057843bd37bc28cb1ba08, type: 2}
     - target: {fileID: -1728013695380148634, guid: 79794a45a2a369146af6b8210420d1d5, type: 3}
       propertyPath: m_Name
       value: Customizable Zend 2
@@ -6246,6 +6282,10 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 885507231195133536, guid: 79794a45a2a369146af6b8210420d1d5, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 102169dc3b864cd49a86d104b7b48922, type: 2}
     - target: {fileID: 2953604236389334553, guid: 79794a45a2a369146af6b8210420d1d5, type: 3}
       propertyPath: m_DirtyAABB
       value: 0
@@ -6346,6 +6386,10 @@ PrefabInstance:
       propertyPath: m_AABB.m_Extent.z
       value: 0.07014112
       objectReference: {fileID: 0}
+    - target: {fileID: 7140606858727328969, guid: 79794a45a2a369146af6b8210420d1d5, type: 3}
+      propertyPath: 'm_Materials.Array.data[3]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 51f365ffe8ca57a4b802597897505e61, type: 2}
     - target: {fileID: 7140606858727328969, guid: 79794a45a2a369146af6b8210420d1d5, type: 3}
       propertyPath: m_BlendShapeWeights.Array.size
       value: 57

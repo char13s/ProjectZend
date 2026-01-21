@@ -72,6 +72,10 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _MaskMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _MaskReflection:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -168,6 +172,10 @@ Material:
     - _GlossTextureSoftness: 0
     - _Glossiness: 0.6
     - _Glow_Edge_Width: 1
+    - _Hide_Arms: 0
+    - _Hide_LowerLegs: 0
+    - _Hide_Torso: 0
+    - _Hide_UpperLegs: 0
     - _HighlightColorPower: 0.7
     - _LLI_Max: 1
     - _LLI_Min: 0

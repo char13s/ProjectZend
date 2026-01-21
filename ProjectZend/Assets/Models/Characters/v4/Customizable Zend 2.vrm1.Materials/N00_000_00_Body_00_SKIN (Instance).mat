@@ -71,6 +71,10 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _MaskMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _MaskReflection:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -167,6 +171,10 @@ Material:
     - _GlossTextureSoftness: 0
     - _Glossiness: 0.6
     - _Glow_Edge_Width: 1
+    - _Hide_Arms: 0
+    - _Hide_LowerLegs: 0
+    - _Hide_Torso: 0
+    - _Hide_UpperLegs: 0
     - _HighlightColorPower: 0.7
     - _LLI_Max: 1
     - _LLI_Min: 0
@@ -246,7 +254,7 @@ Material:
     - _OutlineWidthAffectedByViewDistance: 0
     - _OutlineWidthMode: 1
     - _OutlineZPostionInCamera: 0
-    - _OverallShadowColorPower: 0.7
+    - _OverallShadowColorPower: 1
     - _PADist: 0
     - _PASize: 0.5
     - _PASmooTrans: 1
@@ -255,7 +263,7 @@ Material:
     - _PointSpotlightIntensity: 0
     - _PresAdju: 1
     - _RELG: 1
-    - _ReduSha: 0.5
+    - _ReduSha: 0.51
     - _RefMetallic: 0
     - _RefVal: 0
     - _ReflectionIntensity: 0
@@ -276,16 +284,16 @@ Material:
     - _SelfLitIntensity: 0
     - _SelfLitPower: 2
     - _SelfShadowAffectedByLightShadowStrength: 0
-    - _SelfShadowHardness: 1
+    - _SelfShadowHardness: 0.958
     - _SelfShadowRealTimeShadowColorPower: 1
-    - _SelfShadowRealtimeShadowIntensity: 1
+    - _SelfShadowRealtimeShadowIntensity: 0.766
     - _SelfShadowShadowTAtViewDirection: 0
-    - _SelfShadowThreshold: 0.93
+    - _SelfShadowThreshold: 0.913
     - _ShadingShiftFactor: -0.37213314
     - _ShadingShiftTexScale: 1
     - _ShadingToonyFactor: 0.94786656
     - _ShadowColorTexturePower: 0
-    - _ShadowHardness: 0
+    - _ShadowHardness: 1
     - _ShadowTColorPower: 1
     - _ShadowTHardness: 1
     - _ShadowTIntensity: 1
@@ -333,7 +341,7 @@ Material:
     - _OutResi: {r: 1, g: 1, b: 1, a: 1}
     - _OutlineColor: {r: 0.07535559, g: 0.008135317, b: 0.015747765, a: 1}
     - _OutlineOffset: {r: 0, g: 0, b: 0, a: 1}
-    - _OverallShadowColor: {r: 1, g: 1, b: 1, a: 1}
+    - _OverallShadowColor: {r: 0.1325681, g: 0.12326804, b: 0.3283019, a: 1}
     - _PTCol: {r: 0, g: 0, b: 0, a: 1}
     - _PrevPosition: {r: 0, g: 0, b: 0, a: 0}
     - _RimColor: {r: 0.25333324, g: 0.25333324, b: 0.25333324, a: 1}
