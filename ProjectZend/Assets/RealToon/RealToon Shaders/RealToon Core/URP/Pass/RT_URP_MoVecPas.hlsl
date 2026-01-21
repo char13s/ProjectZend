@@ -120,7 +120,7 @@ float4 frag(Varyings input) : SV_Target
 
 		
 	//RT_CO
-	RT_CO(input.uv, _MainTex_var, _MainTex_var.a, input.positionWS, input.normalWS, input.positionCS.xy);
+	RT_CO(input.uv);
 	//==
 		
 		

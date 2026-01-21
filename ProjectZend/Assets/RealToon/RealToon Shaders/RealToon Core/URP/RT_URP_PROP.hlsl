@@ -290,6 +290,13 @@ CBUFFER_START(UnityPerMaterial)
 		float3 _ObjectRight;
 	//==
 
+
+	// == Custom Body Masking Properties
+		uniform half _Hide_Arms;
+		uniform half _Hide_Torso;
+		uniform half _Hide_UpperLegs;
+		uniform half _Hide_LowerLegs;
+	// ==
 CBUFFER_END
 
 //===============================================================================
@@ -987,12 +994,9 @@ SAMPLER(sampler_MaskTransparency);
 TEXTURE2D(_OutlineWidthControl);
 SAMPLER(sampler_OutlineWidthControl);
 
-// Custom Body Masking Properties
-TEXTURE2D(_MaskMap); SAMPLER(sampler_MaskMap);
-float _Hide_Arms;
-float _Hide_Torso;
-float _Hide_UpperLegs;
-float _Hide_LowerLegs;
+TEXTURE2D(_MaskMap);
+SAMPLER(sampler_MaskMap);
+
 
 #if N_F_MC_ON
 	TEXTURE2D(_MCap);

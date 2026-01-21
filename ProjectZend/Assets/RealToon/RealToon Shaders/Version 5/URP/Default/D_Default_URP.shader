@@ -36,7 +36,12 @@ Shader "Universal Render Pipeline/RealToon/Version 5/Default/Default"
 		_AAS ("Anti - Aliasing Softness", Range(0.0001, 1)) = 0.0001
         [RTToggleOption] _UseSecondaryCutout ("Use Secondary Cutout Only", Float ) = 0.0
         _SecondaryCutout ("Secondary Cutout", 2D) = "white" {}
-
+		// Line 39-ish
+		_MaskMap("Skin Mask Map", 2D) = "white" {}
+_Hide_Arms("Hide Arms", Float) = 0
+_Hide_Torso("Hide Torso", Float) = 0
+_Hide_UpperLegs("Hide Upper Legs", Float) = 0
+_Hide_LowerLegs("Hide Lower Legs", Float) = 0
 		[Toggle(N_F_COEDGL_ON)] _N_F_COEDGL("Enable Glow Edge", Float) = 0.0
 		[HDR] _Glow_Color("Glow Color", Color) = (1.0,1.0,1.0,1.0)
 		_Glow_Edge_Width("Glow Edge Width", Float) = 1.0
@@ -554,7 +559,8 @@ DOTS_LiBleSki(input.indices, input.weights, input.positionOS.xyz, input.normalOS
 
 			UNITY_SETUP_INSTANCE_ID (input);
 			UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(input);
-
+			// Inside the Main Body fragment function
+			RT_CO(input.uv);
 			#if defined(DYNAMICLIGHTMAP_ON)
 				float2 RTD_SHA_MAS_UV = input.dynamicLightmapUV;
 				float2 RTD_DYN_LIGMAP_UV = input.dynamicLightmapUV;
@@ -3063,6 +3069,8 @@ DOTS_LiBleSki(input.indices, input.weights, input.positionOS.xyz, input.normalOS
 
 			UNITY_SETUP_INSTANCE_ID (input);
 			UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(input);
+
+			RT_CO(input.uv);
 
             float3 positionWS = input.positionWSAndFogFactor.xyz;
 			float4 objPos = mul ( GetObjectToWorldMatrix(), float4(0.0,0.0,0.0,1.0) );

@@ -97,22 +97,28 @@ public class WearClothes : MonoBehaviour
         currentTop.transform.localPosition = Vector3.zero;
         currentTop.transform.localRotation = Quaternion.identity;
 
-        // 1. Disable VRM scripts to prevent errors
-        foreach (var script in currentTop.GetComponentsInChildren<MonoBehaviour>()) {
+        // 1. Disable VRM scripts (SpringBones) on the hoodie temporarily
+        // We will re-enable them after mapping so they don't freak out
+        var vrmScripts = currentTop.GetComponentsInChildren<MonoBehaviour>();
+        foreach (var script in vrmScripts) {
             if (!(script is SkinnedMeshRenderer)) script.enabled = false;
         }
 
-        // 2. RUN THE FIXED BONE MAPPING
-        ApplyBones(currentTop);
+        // 2. Bone Mapping Logic
+        ApplyBonesFixed(currentTop);
 
-        // 3. Update Masking
+        // 3. FORCE HIERARCHY ALIGNMENT (The Fix for Drawstrings)
+        ParentHoodieSkeleton(currentTop);
+
+        // 4. Update Masking
         SetSkinMask(item);
+
+        // 5. Re-enable scripts so drawstrings have physics again
+        foreach (var script in vrmScripts) script.enabled = true;
     }
 
-    private void ApplyBones(GameObject instance) {
+    private void ApplyBonesFixed(GameObject instance) {
         SkinnedMeshRenderer bodyRenderer = mainBody.GetComponentInChildren<SkinnedMeshRenderer>();
-
-        // Map the Body's bones
         Dictionary<string, Transform> masterBones = new Dictionary<string, Transform>();
         foreach (Transform b in bodyRenderer.bones) masterBones[b.name] = b;
 
@@ -120,24 +126,31 @@ public class WearClothes : MonoBehaviour
 
         foreach (var cRenderer in clothingRenderers) {
             Transform[] newBones = new Transform[cRenderer.bones.Length];
-
             for (int i = 0; i < cRenderer.bones.Length; i++) {
                 string boneName = cRenderer.bones[i].name;
-
-                if (masterBones.ContainsKey(boneName)) {
-                    // If the body has this bone, follow the body
-                    newBones[i] = masterBones[boneName];
-                }
-                else {
-                    // FIX: If the body DOESN'T have this bone (like Drawstrings),
-                    // keep its original bone so it doesn't stretch to the floor!
-                    newBones[i] = cRenderer.bones[i];
-                }
+                // If body has it, use body bone. If not (Drawstrings), keep original.
+                newBones[i] = masterBones.ContainsKey(boneName) ? masterBones[boneName] : cRenderer.bones[i];
             }
-
             cRenderer.bones = newBones;
             cRenderer.rootBone = bodyRenderer.rootBone;
             cRenderer.updateWhenOffscreen = true;
+        }
+    }
+
+    private void ParentHoodieSkeleton(GameObject instance) {
+        // VRoid hoodies usually have a 'Root' or 'Hips'
+        Transform hoodieHips = instance.transform.Find("Root/Hips") ?? instance.transform.Find("Hips");
+
+        // Find the Body's Hips
+        SkinnedMeshRenderer bodyRenderer = mainBody.GetComponentInChildren<SkinnedMeshRenderer>();
+        Transform bodyHips = null;
+        foreach (var b in bodyRenderer.bones) if (b.name == "Hips") bodyHips = b;
+
+        if (hoodieHips != null && bodyHips != null) {
+            // This snaps the hoodie's "extra" bones (drawstrings) to move with the body's hips
+            hoodieHips.SetParent(bodyHips);
+            hoodieHips.localPosition = Vector3.zero;
+            hoodieHips.localRotation = Quaternion.identity;
         }
     }
     private void ChangeColor(Color temp) {
@@ -160,7 +173,8 @@ public class WearClothes : MonoBehaviour
     }
     public void SetSkinMask(ClothingItem item) {
         if (skinMaterial == null) return;
-
+        Debug.Log($"Applying Mask Texture: {masterSkinMask.name}");
+        skinMaterial.SetTexture("_MaskMap", masterSkinMask);
         // We send 1.0 to HIDE and 0.0 to SHOW
         skinMaterial.SetFloat("_Hide_Arms", item.hideArms ? 1f : 0f);
         skinMaterial.SetFloat("_Hide_Torso", item.hideTorso ? 1f : 0f);

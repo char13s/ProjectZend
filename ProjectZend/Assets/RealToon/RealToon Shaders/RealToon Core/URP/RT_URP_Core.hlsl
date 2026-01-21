@@ -462,71 +462,22 @@ half CalculateBodyMask(float2 uv) {
 }
 
 //RT_CO
-void RT_CO(float2 uv, half4 _MainTex_var, out half _MainTex_var_a, float3 positionWS, float3 normalDirection, float2 positionCS)
+void RT_CO(float2 uv)
 {
-    _MainTex_var_a = 1.0;
-	
-	#if N_F_TRANS_ON
+	// 1. CUSTOM MASK LOGIC
+	// We sample the mask map using the UVs passed from whatever pass is running
+	float4 maskMap = SAMPLE_TEXTURE2D(_MaskMap, sampler_MaskMap, uv);
+	float bodyMask = CalculateBodyMask(uv, maskMap);
 
-		#if N_F_CO_ON
+	// This kills the pixel if the mask says "Hide"
+	clip(00.01 - bodyMask);
 
-			#ifdef N_F_TP_ON
-				half4 _SecondaryCutout_var = RT_Tripl_Default(_SecondaryCutout, sampler_SecondaryCutout, GetAbsolutePositionWS(positionWS), normalDirection);
-			#else
-				half4 _SecondaryCutout_var = SAMPLE_TEXTURE2D(_SecondaryCutout, sampler_SecondaryCutout ,TRANSFORM_TEX(uv,_SecondaryCutout));
-			#endif
-
-			half RT_USSECCUT_OO;
-			if (!_UseSecondaryCutout)
-			{
-				RT_USSECCUT_OO = _MainTex_var.r * _SecondaryCutout_var.r;
-			}
-			else
-			{
-				RT_USSECCUT_OO = _SecondaryCutout_var.r;
-			}
-
-			half RT_USSECCUT_OO_2;
-			if (!_UseSecondaryCutout)
-			{
-				RT_USSECCUT_OO_2 = _MainTex_var.a * _SecondaryCutout_var.r;
-			}
-			else
-			{
-				RT_USSECCUT_OO_2 = _SecondaryCutout_var.a;
-			}
-
-			half RTD_CO_ON = (half)lerp(( RT_USSECCUT_OO + lerp(0.5, (-1.0), _Cutout)), saturate(((1.0 - _Cutout) > 0.5 ? (1.0 - (1.0 - 2.0 * ((1.0 - _Cutout) - 0.5)) * (1.0 - RT_USSECCUT_OO_2 )) : (2.0 * (1.0 - _Cutout) * RT_USSECCUT_OO_2 ))), _AlphaBaseCutout);
-	
-			#if N_F_ATC_ON
-	
-				#ifdef N_F_SCO_ON
-					_MainTex_var_a = saturate( ( -( RT_Dither_Out(positionCS) - RTD_CO_ON ) - _Cutout) / max(fwidth(-( RT_Dither_Out(positionCS) - RTD_CO_ON )), 0.0001) + 0.5 );
-				#else
-					_MainTex_var_a = saturate( (RTD_CO_ON - _Cutout) / max(fwidth(RTD_CO_ON), 0.0001) + 0.5 );
-				#endif	
-	
-			#else
-	
-				#ifdef N_F_SCO_ON
-					clip( -( RT_Dither_Out(positionCS) - RTD_CO_ON ));
-				#else
-
-			// --- START CUSTOM MASK ---
-			float4 maskMap = SAMPLE_TEXTURE2D(_MaskMap, sampler_MaskMap, uv);
-			float bodyMask = CalculateBodyMask(uv, maskMap);
-
-			// If bodyMask is 1, it forces the value below 0, triggering the clip
-			clip((RTD_CO_ON - 0.5) - bodyMask);
-			// --- END CUSTOM MASK ---
-
-				#endif
-
-			#endif
-
-		#endif
-
-	#endif
+	// 2. NATIVE REALTOON LOGIC
+	// We renamed the variable to 'cutoutVar' to avoid "redefinition" errors
+#if N_F_CO_ON
+	float4 cutoutVar = SAMPLE_TEXTURE2D(_SecondaryCutout, sampler_SecondaryCutout, uv);
+	clip(cutoutVar.a - _Cutout);
+#endif
 }
 //
 
