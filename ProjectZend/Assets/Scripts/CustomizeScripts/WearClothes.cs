@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class WearClothes : MonoBehaviour
@@ -6,115 +7,83 @@ public class WearClothes : MonoBehaviour
     [SerializeField] GameObject mainBody;
     [SerializeField] SkinnedMeshRenderer hair;
     //[SerializeField] private SkinnedMeshRenderer playerBody;
-    private GameObject clothing1;
     //[SerializeField] private GameObject[] tops;
-    private List<GameObject> tops = new List<GameObject>();
-    private GameObject currentTop;
-    private int currentTopIndex=0;
-    [SerializeField] private ClothingItem test;
+    private List<ClothingItem> tops = new List<ClothingItem>();
+    private List<ClothingItem> bottoms = new List<ClothingItem>();
+    private List<ClothingItem> shoes = new List<ClothingItem>();
+
+    public GameObject currentTop;
+    public GameObject currentBottom;
+    public GameObject currentShoes;
+    // Track position for each category
+    private int topIndex = 0;
+    private int bottomIndex = 0;
+    private int shoeIndex = 0;
+    [SerializeField] private ClothingItem top;
+    [SerializeField] private ClothingItem bottom;
+    [SerializeField] private ClothingItem shoe;
     private Material skinMaterial;
     public Texture2D masterSkinMask;
-
     public GameObject CurrentTop { get => currentTop; set { currentTop = value; } }
 
     private void Awake() {
         Transform bodyMesh = mainBody.transform.Find("Body");
         if (bodyMesh != null) {
+            // Use .material to create a session-only instance
             skinMaterial = bodyMesh.GetComponent<SkinnedMeshRenderer>().material;
-            // APPLY THE MASK AUTOMATICALLY ON START
+
+            // Ensure the character is visible when the game starts
+            ResetSkinMask();
+
             if (masterSkinMask != null) {
                 skinMaterial.SetTexture("_MaskMap", masterSkinMask);
             }
         }
     }
+
     private void Start() {
+
         GetSets();
-        AttachClothing(test);
+        //AttachClothing(top);
+        //AttachClothing(bottom);
+        //AttachClothing(shoe);
         //PutOn(test.clothingPrefab);
     }
     private void GetSets() {
-        foreach (GameObject go in Resources.LoadAll<GameObject>("Tops Assets")) {
-            tops.Add(go);
-        }
+        tops.AddRange(Resources.LoadAll<ClothingItem>("Tops Assets"));
+        bottoms.AddRange(Resources.LoadAll<ClothingItem>("Bottoms Assets"));
+        shoes.AddRange(Resources.LoadAll<ClothingItem>("Shoes Assets"));
     }
-    public void PutOn(GameObject clothingPrefab) {
-        // 1. Instantiate the hoodie
-        GameObject instance = Instantiate(clothingPrefab, mainBody.transform);
-        instance.transform.localPosition = Vector3.zero;
-        instance.transform.localRotation = Quaternion.identity;
 
-        // 2. DISABLE UniVRM scripts on the CLONE to prevent the error
-        // We don't want the hoodie trying to "look at" things or calculate its own physics
-        MonoBehaviour[] vrmScripts = instance.GetComponentsInChildren<MonoBehaviour>();
-        foreach (var script in vrmScripts) {
-            // We disable all scripts that aren't the mesh renderers themselves
-            if (!(script is SkinnedMeshRenderer)) {
-                script.enabled = false;
-            }
-        }
-
-        // 3. Map Main Body Bones
-        Dictionary<string, Transform> masterBoneMap = new Dictionary<string, Transform>();
-        foreach (Transform child in mainBody.GetComponentsInChildren<Transform>()) {
-            if (!masterBoneMap.ContainsKey(child.name))
-                masterBoneMap.Add(child.name, child);
-        }
-
-        // 4. Process the Renderers
-        SkinnedMeshRenderer[] targetRenderers = instance.GetComponentsInChildren<SkinnedMeshRenderer>();
-        SkinnedMeshRenderer masterRenderer = mainBody.GetComponentInChildren<SkinnedMeshRenderer>();
-
-        foreach (var sRenderer in targetRenderers) {
-            Transform[] boneArray = new Transform[sRenderer.bones.Length];
-            for (int i = 0; i < sRenderer.bones.Length; i++) {
-                string targetBoneName = sRenderer.bones[i].name;
-                if (masterBoneMap.TryGetValue(targetBoneName, out Transform foundBone)) {
-                    boneArray[i] = foundBone;
-                }
-                else {
-                    boneArray[i] = masterRenderer.rootBone;
-                }
-            }
-
-            sRenderer.bones = boneArray;
-            sRenderer.rootBone = masterRenderer.rootBone;
-            sRenderer.updateWhenOffscreen = true;
-        }
-
-        // 5. Instead of destroying the Root, we just hide it.
-        // This keeps the 'Transform' alive so the UniVRM scripts don't throw errors,
-        // but it removes the "ghost" skeleton from your scene view.
-        Transform hoodieRoot = instance.transform.Find("Root");
-        if (hoodieRoot != null) {
-            hoodieRoot.gameObject.SetActive(false);
-        }
-        //SetSkinMask(clothingPrefab);
-    }
     public void AttachClothing(ClothingItem item) {
-        if (currentTop != null) Destroy(currentTop);
-
-        currentTop = Instantiate(item.clothingPrefab, mainBody.transform);
-        currentTop.transform.localPosition = Vector3.zero;
-        currentTop.transform.localRotation = Quaternion.identity;
-
-        // 1. Disable VRM scripts (SpringBones) on the hoodie temporarily
-        // We will re-enable them after mapping so they don't freak out
-        var vrmScripts = currentTop.GetComponentsInChildren<MonoBehaviour>();
-        foreach (var script in vrmScripts) {
-            if (!(script is SkinnedMeshRenderer)) script.enabled = false;
+        // 1. Identify slot
+        if (item.itemType == ClothingType.Top) {
+            if (currentTop != null) DestroyImmediate(currentTop); // Use DestroyImmediate for wardrobe logic
+        }
+        else if (item.itemType == ClothingType.Bottom) {
+            if (currentBottom != null) DestroyImmediate(currentBottom);
+        }
+        else if (item.itemType == ClothingType.Shoes) {
+            if (currentShoes != null) DestroyImmediate(currentShoes);
         }
 
-        // 2. Bone Mapping Logic
-        ApplyBonesFixed(currentTop);
+        // 2. Spawn the new one
+        GameObject newClothing = Instantiate(item.clothingPrefab, mainBody.transform);
 
-        // 3. FORCE HIERARCHY ALIGNMENT (The Fix for Drawstrings)
-        ParentHoodieSkeleton(currentTop);
+        // 3. Link the Data BEFORE doing anything else
+        var holder = newClothing.AddComponent<ClothingDataHolder>();
+        holder.itemData = item;
 
-        // 4. Update Masking
-        SetSkinMask(item);
+        // 4. Assign the slot
+        if (item.itemType == ClothingType.Top) currentTop = newClothing;
+        else if (item.itemType == ClothingType.Bottom) currentBottom = newClothing;
+        else if (item.itemType == ClothingType.Shoes) currentShoes = newClothing;
 
-        // 5. Re-enable scripts so drawstrings have physics again
-        foreach (var script in vrmScripts) script.enabled = true;
+        // 5. Physics and Bone Mapping
+        ApplyBonesFixed(newClothing);
+
+        // 6. NOW update the mask
+        UpdateBodyMask();
     }
 
     private void ApplyBonesFixed(GameObject instance) {
@@ -137,22 +106,6 @@ public class WearClothes : MonoBehaviour
         }
     }
 
-    private void ParentHoodieSkeleton(GameObject instance) {
-        // VRoid hoodies usually have a 'Root' or 'Hips'
-        Transform hoodieHips = instance.transform.Find("Root/Hips") ?? instance.transform.Find("Hips");
-
-        // Find the Body's Hips
-        SkinnedMeshRenderer bodyRenderer = mainBody.GetComponentInChildren<SkinnedMeshRenderer>();
-        Transform bodyHips = null;
-        foreach (var b in bodyRenderer.bones) if (b.name == "Hips") bodyHips = b;
-
-        if (hoodieHips != null && bodyHips != null) {
-            // This snaps the hoodie's "extra" bones (drawstrings) to move with the body's hips
-            hoodieHips.SetParent(bodyHips);
-            hoodieHips.localPosition = Vector3.zero;
-            hoodieHips.localRotation = Quaternion.identity;
-        }
-    }
     private void ChangeColor(Color temp) {
         print("HairSwapButton selected");
 
@@ -161,16 +114,22 @@ public class WearClothes : MonoBehaviour
        // hair.color = temp;
        // hair.material = hairMaterial;
     }
-    void OnSwap(int val) {
-        if (CurrentTop != null) {
-            Destroy(CurrentTop);
+
+    public void SwapClothing(ClothingType type, int direction) {
+        if (type == ClothingType.Top && tops.Count > 0) {
+            topIndex = (topIndex + direction + tops.Count) % tops.Count;
+            AttachClothing(tops[topIndex]);
         }
-        currentTopIndex += val;
-        if (currentTopIndex == tops.Count) {
-            currentTopIndex = 0;
+        else if (type == ClothingType.Bottom && bottoms.Count > 0) {
+            bottomIndex = (bottomIndex + direction + bottoms.Count) % bottoms.Count;
+            AttachClothing(bottoms[bottomIndex]);
         }
-        CurrentTop = tops[currentTopIndex];
+        else if (type == ClothingType.Shoes && shoes.Count > 0) {
+            shoeIndex = (shoeIndex + direction + shoes.Count) % shoes.Count;
+            AttachClothing(shoes[shoeIndex]);
+        }
     }
+
     public void SetSkinMask(ClothingItem item) {
         if (skinMaterial == null) return;
         Debug.Log($"Applying Mask Texture: {masterSkinMask.name}");
@@ -180,5 +139,55 @@ public class WearClothes : MonoBehaviour
         skinMaterial.SetFloat("_Hide_Torso", item.hideTorso ? 1f : 0f);
         skinMaterial.SetFloat("_Hide_UpperLegs", item.hideUpperLegs ? 1f : 0f);
         skinMaterial.SetFloat("_Hide_LowerLegs", item.hideLowerLegs ? 1f : 0f);
+    }
+
+    public void UpdateBodyMask() {
+        // Default: Everything is visible (0)
+        float hArms = 0, hTorso = 0, hULegs = 0, hLLegs = 0;
+
+        // We check every slot. If an item exists, it adds its "Hide" requests to the total.
+        ProcessSlot(currentTop, ref hArms, ref hTorso, ref hULegs, ref hLLegs);
+        ProcessSlot(currentBottom, ref hArms, ref hTorso, ref hULegs, ref hLLegs);
+        ProcessSlot(currentShoes, ref hArms, ref hTorso, ref hULegs, ref hLLegs);
+
+        // Send the combined totals to the shader
+        // Use the variable we already grabbed in Awake!
+        if (skinMaterial != null) {
+            skinMaterial.SetFloat("_Hide_Arms", hArms);
+            skinMaterial.SetFloat("_Hide_Torso", hTorso);
+            skinMaterial.SetFloat("_Hide_UpperLegs", hULegs);
+            skinMaterial.SetFloat("_Hide_LowerLegs", hLLegs);
+        }
+        print(hArms+" "+hTorso + " " +hULegs + " " +hLLegs);
+    }
+
+    void ProcessSlot(GameObject obj, ref float a, ref float t, ref float u, ref float l) {
+        if (obj == null) return;
+
+        ClothingDataHolder holder = obj.GetComponent<ClothingDataHolder>();
+
+        if (holder != null && holder.itemData != null) {
+            // Use '||=' logic (if it was already 1, keep it 1)
+            if (holder.itemData.hideArms) a = 1;
+            if (holder.itemData.hideTorso) t = 1;
+            if (holder.itemData.hideUpperLegs) u = 1;
+            if (holder.itemData.hideLowerLegs) l = 1;
+        }
+    }
+
+    // Create this helper method to reuse whenever you need a clean slate
+    public void ResetSkinMask() {
+        if (skinMaterial != null) {
+            skinMaterial.SetFloat("_Hide_Arms", 0f);
+            skinMaterial.SetFloat("_Hide_Torso", 0f);
+            skinMaterial.SetFloat("_Hide_UpperLegs", 0f);
+            skinMaterial.SetFloat("_Hide_LowerLegs", 0f);
+        }
+    }
+
+    private void OnApplicationQuit() {
+        // This ensures that when you return to the Editor, 
+        // your character isn't still missing their torso.
+        ResetSkinMask();
     }
 }

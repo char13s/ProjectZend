@@ -4,6 +4,7 @@ public class ClothingItem : ScriptableObject
 {
     public string itemName;
     public GameObject clothingPrefab;
+    public ClothingType itemType;
     //public Sprite icon;
 
     [Header("Skin Masking Toggles")]
@@ -11,4 +12,6 @@ public class ClothingItem : ScriptableObject
     public bool hideTorso;
     public bool hideUpperLegs;
     public bool hideLowerLegs;
+
+    
 }
