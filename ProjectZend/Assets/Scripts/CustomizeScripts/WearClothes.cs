@@ -24,6 +24,8 @@ public class WearClothes : MonoBehaviour
     [SerializeField] private ClothingItem shoe;
     private Material skinMaterial;
     public Texture2D masterSkinMask;
+    //Ui slots
+
     public GameObject CurrentTop { get => currentTop; set { currentTop = value; } }
 
     private void Awake() {
@@ -174,6 +176,16 @@ public class WearClothes : MonoBehaviour
             if (holder.itemData.hideLowerLegs) l = 1;
         }
     }
+
+    // These are "Wrapper" functions for your UI buttons
+    public void NextTop() => SwapClothing(ClothingType.Top, 1);
+    public void PrevTop() => SwapClothing(ClothingType.Top, -1);
+
+    public void NextBottom() => SwapClothing(ClothingType.Bottom, 1);
+    public void PrevBottom() => SwapClothing(ClothingType.Bottom, -1);
+
+    public void NextShoes() => SwapClothing(ClothingType.Shoes, 1);
+    public void PrevShoes() => SwapClothing(ClothingType.Shoes, -1);
 
     // Create this helper method to reuse whenever you need a clean slate
     public void ResetSkinMask() {

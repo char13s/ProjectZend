@@ -13,7 +13,7 @@ public class ClothingMenu : MonoBehaviour
             GameObject btn = Instantiate(buttonPrefab, gridParent);
             //btn.GetComponent<Image>().sprite = item.icon;
             btn.GetComponent<Button>().onClick.AddListener(() => {
-                characterFixer.PutOn(item.clothingPrefab);
+               // characterFixer.AttachClothing(item.clothingPrefab);
 
                 // Handle the skin masking automatically!
                 characterFixer.SetSkinMask(item);
