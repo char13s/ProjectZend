@@ -1,7 +1,6 @@
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
-
+using TMPro;
 public class WearClothes : MonoBehaviour
 {
     [SerializeField] GameObject mainBody;
@@ -12,20 +11,22 @@ public class WearClothes : MonoBehaviour
     private List<ClothingItem> bottoms = new List<ClothingItem>();
     private List<ClothingItem> shoes = new List<ClothingItem>();
 
-    public GameObject currentTop;
-    public GameObject currentBottom;
-    public GameObject currentShoes;
+    private GameObject currentTop;
+    private GameObject currentBottom;
+    private GameObject currentShoes;
     // Track position for each category
     private int topIndex = 0;
     private int bottomIndex = 0;
     private int shoeIndex = 0;
-    [SerializeField] private ClothingItem top;
-    [SerializeField] private ClothingItem bottom;
-    [SerializeField] private ClothingItem shoe;
+    //[SerializeField] private ClothingItem top;
+    //[SerializeField] private ClothingItem bottom;
+    //[SerializeField] private ClothingItem shoe;
     private Material skinMaterial;
     public Texture2D masterSkinMask;
     //Ui slots
-
+    [SerializeField]private TextMeshProUGUI textTop;
+    [SerializeField]private TextMeshProUGUI textBottoms;
+    [SerializeField]private TextMeshProUGUI textShoes;
     public GameObject CurrentTop { get => currentTop; set { currentTop = value; } }
 
     private void Awake() {
@@ -50,6 +51,9 @@ public class WearClothes : MonoBehaviour
         //AttachClothing(bottom);
         //AttachClothing(shoe);
         //PutOn(test.clothingPrefab);
+        if (tops.Count > 0) AttachClothing(tops[0]);
+        if (bottoms.Count > 0) AttachClothing(bottoms[0]);
+        if (shoes.Count > 0) AttachClothing(shoes[0]);
     }
     private void GetSets() {
         tops.AddRange(Resources.LoadAll<ClothingItem>("Tops Assets"));
@@ -121,14 +125,17 @@ public class WearClothes : MonoBehaviour
         if (type == ClothingType.Top && tops.Count > 0) {
             topIndex = (topIndex + direction + tops.Count) % tops.Count;
             AttachClothing(tops[topIndex]);
+            textTop.text = tops[topIndex].itemName;
         }
         else if (type == ClothingType.Bottom && bottoms.Count > 0) {
             bottomIndex = (bottomIndex + direction + bottoms.Count) % bottoms.Count;
             AttachClothing(bottoms[bottomIndex]);
+            textBottoms.text = bottoms[bottomIndex].itemName;
         }
         else if (type == ClothingType.Shoes && shoes.Count > 0) {
             shoeIndex = (shoeIndex + direction + shoes.Count) % shoes.Count;
             AttachClothing(shoes[shoeIndex]);
+            textShoes.text = shoes[shoeIndex].itemName;
         }
     }
 
@@ -186,6 +193,25 @@ public class WearClothes : MonoBehaviour
 
     public void NextShoes() => SwapClothing(ClothingType.Shoes, 1);
     public void PrevShoes() => SwapClothing(ClothingType.Shoes, -1);
+
+    public void SaveOutfit() {
+        PlayerPrefs.SetInt("SavedTop", topIndex);
+        PlayerPrefs.SetInt("SavedBottom", bottomIndex);
+        PlayerPrefs.SetInt("SavedShoe", shoeIndex);
+        PlayerPrefs.Save();
+        Debug.Log("Outfit Saved!");
+    }
+
+    public void LoadOutfit() {
+        topIndex = PlayerPrefs.GetInt("SavedTop", 0); // Default to 0 if none saved
+        bottomIndex = PlayerPrefs.GetInt("SavedBottom", 0);
+        shoeIndex = PlayerPrefs.GetInt("SavedShoe", 0);
+
+        // Apply the loaded indices
+        if (tops.Count > topIndex) AttachClothing(tops[topIndex]);
+        if (bottoms.Count > bottomIndex) AttachClothing(bottoms[bottomIndex]);
+        if (shoes.Count > shoeIndex) AttachClothing(shoes[shoeIndex]);
+    }
 
     // Create this helper method to reuse whenever you need a clean slate
     public void ResetSkinMask() {

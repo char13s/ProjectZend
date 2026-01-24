@@ -12,10 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 37a01b40cff945040a36f6781c87eb9a, type: 3}
   m_Name: School Blazer
   m_EditorClassIdentifier: 
-  itemName: 
-  clothingPrefab: {fileID: 0}
+  itemName: School Blazer
+  clothingPrefab: {fileID: -1728013695380148634, guid: 8d29f128e77f91540803979c5abff77e, type: 3}
   itemType: 0
-  hideArms: 0
-  hideTorso: 0
+  hideArms: 1
+  hideTorso: 1
   hideUpperLegs: 0
   hideLowerLegs: 0

@@ -12,10 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 37a01b40cff945040a36f6781c87eb9a, type: 3}
   m_Name: Jeans
   m_EditorClassIdentifier: 
-  itemName: 
-  clothingPrefab: {fileID: 0}
-  itemType: 0
+  itemName: Jeans
+  clothingPrefab: {fileID: -1728013695380148634, guid: 56d04f5ce078ad149bbd0fa28d852daa, type: 3}
+  itemType: 1
   hideArms: 0
   hideTorso: 0
-  hideUpperLegs: 0
+  hideUpperLegs: 1
   hideLowerLegs: 0
